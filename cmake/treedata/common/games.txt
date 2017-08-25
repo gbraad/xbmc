@@ -9,5 +9,6 @@ xbmc/games/controllers/windows     games/controllers/windows
 xbmc/games/dialogs                 games/dialogs
 xbmc/games/dialogs/osd             games/dialogs/osd
 xbmc/games/ports                   games/ports
+xbmc/games/saves/dialogs           games/saves/dialogs
 xbmc/games/tags                    games/tags
 xbmc/games/windows                 games/windows

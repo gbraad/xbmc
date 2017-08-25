@@ -147,6 +147,7 @@ const CWindowTranslator::WindowMapByName CWindowTranslator::WindowMappingByName 
     { "gameosd"                  , WINDOW_DIALOG_GAME_OSD },
     { "gamevideofilter"          , WINDOW_DIALOG_GAME_VIDEO_FILTER },
     { "gameviewmode"             , WINDOW_DIALOG_GAME_VIEW_MODE },
+    { "gamesaves"                , WINDOW_DIALOG_GAME_SAVES },
 };
 
 namespace

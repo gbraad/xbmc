@@ -17053,7 +17053,11 @@ msgctxt "#35218"
 msgid "Erase savestate"
 msgstr ""
 
-#empty string with id 35219
+#. Button to open the saved game manager from the game OSD
+#: addons/skin.estuary/xml/GameOSD.xml
+msgctxt "#35219"
+msgid "Saved games"
+msgstr ""
 
 #. Description of add-on category for game providers
 #: xbmc/filesystem/AddonsDirectory.cpp
