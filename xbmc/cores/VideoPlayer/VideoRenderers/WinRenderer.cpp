@@ -929,7 +929,8 @@ void CWinRenderer::RenderHW(DWORD flags, CD3DTexture* target)
   }
   CWIN32Util::CropSource(src, dst, targetRect, m_renderOrientation);
 
-  m_processor->Render(src, dst, m_IntermediateTarget.Get(), views, flags, image->frameIdx, m_renderOrientation);
+  m_processor->Render(src, dst, m_IntermediateTarget.Get(), views, flags, image->frameIdx, m_renderOrientation,
+                      m_videoSettings.m_Contrast, m_videoSettings.m_Brightness);
 
   if (!m_bUseHQScaler)
   {
