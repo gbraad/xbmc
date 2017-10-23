@@ -25,7 +25,7 @@
 #include "settings/lib/ISettingCallback.h"
 #include "settings/lib/ISettingsHandler.h"
 #include "settings/lib/ISubSettings.h"
-#include "settings/GameSettings.h"
+#include "cores/GameSettings.h"
 #include "cores/VideoSettings.h"
 #include "threads/CriticalSection.h"
 
@@ -56,8 +56,6 @@ public:
 
   const CGameSettings& GetDefaultGameSettings() const { return m_defaultGameSettings; }
   CGameSettings& GetDefaultGameSettings() { return m_defaultGameSettings; }
-  const CGameSettings& GetCurrentGameSettings() const { return m_currentGameSettings; }
-  CGameSettings& GetCurrentGameSettings() { return m_currentGameSettings; }
 
   /*! \brief Retrieve the watched mode for the given content type
    \param content Current content type
@@ -107,7 +105,6 @@ private:
   CVideoSettings m_defaultVideoSettings;
 
   CGameSettings m_defaultGameSettings;
-  CGameSettings m_currentGameSettings;
 
   typedef std::map<std::string, WatchedMode> WatchedModes;
   WatchedModes m_watchedModes;

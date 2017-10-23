@@ -19,14 +19,32 @@
  */
 #pragma once
 
-#include "cores/IPlayer.h"
-#include "utils/Observer.h"
+namespace KODI
+{
+namespace RETRO
+{
 
-class CGameSettings : public Observable
+enum class SCALINGMETHOD
+{
+  AUTO,
+  NEAREST,
+  LINEAR,
+};
+
+enum class ViewMode
+{
+  Normal,
+  Stretch4x3,
+  Stretch16x9,
+  Stretch16x9Nonlin,
+  Original,
+};
+
+class CGameSettings
 {
 public:
   CGameSettings() { Reset(); }
-  CGameSettings(const CGameSettings &other) { *this = other; }
+  ~CGameSettings() = default;
 
   CGameSettings &operator=(const CGameSettings &rhs);
 
@@ -36,14 +54,35 @@ public:
   bool operator==(const CGameSettings &rhs) const;
   bool operator!=(const CGameSettings &rhs) const { return !(*this == rhs); }
 
-  ESCALINGMETHOD ScalingMethod() const { return m_scalingMethod; }
-  void SetScalingMethod(ESCALINGMETHOD scalingMethod);
+  SCALINGMETHOD ScalingMethod() const { return m_scalingMethod; }
+  void SetScalingMethod(SCALINGMETHOD scalingMethod);
 
   enum ViewMode ViewMode() const { return m_viewMode; }
   void SetViewMode(enum ViewMode viewMode);
 
 private:
-  // Video settings
-  ESCALINGMETHOD m_scalingMethod;
-  enum ViewMode m_viewMode;
+  // Render settings
+  SCALINGMETHOD m_scalingMethod;
+  ViewMode m_viewMode;
 };
+
+class CCriticalSection;
+class CGameSettingsLocked
+{
+public:
+  CGameSettingsLocked(CGameSettings &gs, CCriticalSection &critSection);
+  virtual ~CGameSettingsLocked() = default;
+
+  CGameSettingsLocked(CGameSettingsLocked const &other) = delete;
+  void operator=(CGameSettingsLocked const &rhs) = delete;
+
+  void SetScalingMethod(SCALINGMETHOD scalingMethod);
+  void SetViewMode(enum ViewMode viewMode);
+
+protected:
+  CGameSettings &m_gameSettings;
+  CCriticalSection &m_critSection;
+};
+
+}
+}

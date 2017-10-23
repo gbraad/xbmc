@@ -19,6 +19,15 @@
  */
 
 #include "GameSettings.h"
+#include "threads/CriticalSection.h"
+#include "threads/SingleLock.h"
+
+using namespace KODI;
+using namespace RETRO;
+
+//------------------------------------------------------------------------------
+// CGameSettings
+//------------------------------------------------------------------------------
 
 CGameSettings &CGameSettings::operator=(const CGameSettings &rhs)
 {
@@ -32,8 +41,8 @@ CGameSettings &CGameSettings::operator=(const CGameSettings &rhs)
 
 void CGameSettings::Reset()
 {
-  m_scalingMethod = VS_SCALINGMETHOD_AUTO;
-  m_viewMode = ViewModeNormal;
+  m_scalingMethod = SCALINGMETHOD::AUTO;
+  m_viewMode = ViewMode::Normal;
 }
 
 bool CGameSettings::operator==(const CGameSettings &rhs) const
@@ -42,20 +51,23 @@ bool CGameSettings::operator==(const CGameSettings &rhs) const
          m_viewMode == rhs.m_viewMode;
 }
 
-void CGameSettings::SetScalingMethod(ESCALINGMETHOD scalingMethod)
+//------------------------------------------------------------------------------
+// CGameSettingsLocked
+//------------------------------------------------------------------------------
+
+CGameSettingsLocked::CGameSettingsLocked(CGameSettings &gs, CCriticalSection &critSection) :
+  m_gameSettings(gs), m_critSection(critSection)
 {
-  if (scalingMethod != m_scalingMethod)
-  {
-    m_scalingMethod = scalingMethod;
-    SetChanged();
-  }
 }
 
-void CGameSettings::SetViewMode(enum ViewMode viewMode)
+void CGameSettingsLocked::SetScalingMethod(SCALINGMETHOD scalingMethod)
 {
-  if (viewMode != m_viewMode)
-  {
-    m_viewMode = viewMode;
-    SetChanged();
-  }
+  CSingleLock lock(m_critSection);
+  m_gameSettings.SetScalingMethod(scalingMethod);
+}
+
+void CGameSettingsLocked::SetViewMode(ViewMode viewMode)
+{
+  CSingleLock lock(m_critSection);
+  m_gameSettings.SetViewMode(viewMode);
 }
