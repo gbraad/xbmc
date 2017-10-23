@@ -499,7 +499,7 @@ void CDVDVideoCodecFFmpeg::Dispose()
 void CDVDVideoCodecFFmpeg::SetFilters()
 {
   // ask codec to do deinterlacing if possible
-  EINTERLACEMETHOD mInt = m_processInfo.GetVideoSettigs().m_InterlaceMethod;
+  EINTERLACEMETHOD mInt = m_processInfo.GetVideoSettings().m_InterlaceMethod;
 
   if (!m_processInfo.Supports(mInt))
     mInt = m_processInfo.GetFallbackDeintMethod();
@@ -883,7 +883,7 @@ bool CDVDVideoCodecFFmpeg::SetPictureParams(VideoPicture* pVideoPicture)
   buffer->SetRef(m_pFrame);
   pVideoPicture->videoBuffer = buffer;
 
-  if (m_processInfo.GetVideoSettigs().m_PostProcess)
+  if (m_processInfo.GetVideoSettings().m_PostProcess)
   {
     m_postProc.SetType(g_advancedSettings.m_videoPPFFmpegPostProc, false);
     m_postProc.Process(pVideoPicture);

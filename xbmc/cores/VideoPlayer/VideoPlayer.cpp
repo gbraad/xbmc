@@ -749,7 +749,7 @@ bool CVideoPlayer::CloseFile(bool reopen)
   CLog::Log(LOGNOTICE, "CVideoPlayer::CloseFile()");
 
   CJobManager::GetInstance().Submit([&]() {
-    m_callback.StoreVideoSettings(m_item, m_processInfo->GetVideoSettigs());
+    m_callback.StoreVideoSettings(m_item, m_processInfo->GetVideoSettings());
   }, CJob::PRIORITY_NORMAL);
 
   // set the abort request so that other threads can finish up
@@ -862,8 +862,8 @@ bool CVideoPlayer::OpenInputStream()
     } // end loop over all subtitle files
   }
 
-  SetAVDelay(m_processInfo->GetVideoSettigs().m_AudioDelay);
-  SetSubTitleDelay(m_processInfo->GetVideoSettigs().m_SubtitleDelay);
+  SetAVDelay(m_processInfo->GetVideoSettings().m_AudioDelay);
+  SetSubTitleDelay(m_processInfo->GetVideoSettings().m_SubtitleDelay);
   m_clock.Reset();
   m_dvd.Clear();
   m_errorCount = 0;
@@ -945,7 +945,7 @@ void CVideoPlayer::OpenDefaultStreams(bool reset)
   // open video stream
   valid   = false;
 
-  PredicateVideoFilter vf(m_processInfo->GetVideoSettigs().m_VideoStream);
+  PredicateVideoFilter vf(m_processInfo->GetVideoSettings().m_VideoStream);
   for (const auto &stream : m_SelectionStreams.Get(STREAM_VIDEO, vf))
   {
     if(OpenStream(m_CurrentVideo, stream.demuxerId, stream.id, stream.source, reset))
@@ -964,7 +964,7 @@ void CVideoPlayer::OpenDefaultStreams(bool reset)
   valid   = false;
   if (!m_playerOptions.video_only)
   {
-    PredicateAudioFilter af(m_processInfo->GetVideoSettigs().m_AudioStream);
+    PredicateAudioFilter af(m_processInfo->GetVideoSettings().m_AudioStream);
     for (const auto &stream : m_SelectionStreams.Get(STREAM_AUDIO, af))
     {
       if(OpenStream(m_CurrentAudio, stream.demuxerId, stream.id, stream.source, reset))
@@ -982,13 +982,13 @@ void CVideoPlayer::OpenDefaultStreams(bool reset)
   }
 
   // enable  or disable subtitles
-  bool visible = m_processInfo->GetVideoSettigs().m_SubtitleOn;
+  bool visible = m_processInfo->GetVideoSettings().m_SubtitleOn;
 
   // open subtitle stream
   SelectionStream as = m_SelectionStreams.Get(STREAM_AUDIO, GetAudioStream());
   PredicateSubtitlePriority psp(as.language,
-                                m_processInfo->GetVideoSettigs().m_SubtitleStream,
-                                m_processInfo->GetVideoSettigs().m_SubtitleOn);
+                                m_processInfo->GetVideoSettings().m_SubtitleStream,
+                                m_processInfo->GetVideoSettings().m_SubtitleOn);
   valid = false;
   CloseStream(m_CurrentSubtitle, false);
   for (const auto &stream : m_SelectionStreams.Get(STREAM_SUBTITLE, psp))
@@ -1281,7 +1281,7 @@ void CVideoPlayer::Prepare()
     if (!m_playerOptions.state.empty())
       ptr->SetState(m_playerOptions.state);
     else if(CDVDInputStreamNavigator* nav = dynamic_cast<CDVDInputStreamNavigator*>(m_pInputStream))
-      nav->EnableSubtitleStream(m_processInfo->GetVideoSettigs().m_SubtitleOn);
+      nav->EnableSubtitleStream(m_processInfo->GetVideoSettings().m_SubtitleOn);
   }
 
   if (!OpenDemuxStream())
@@ -2507,7 +2507,7 @@ void CVideoPlayer::HandleMessages()
       CDVDMsgOpenFile &msg(*static_cast<CDVDMsgOpenFile*>(pMsg));
 
       CJobManager::GetInstance().Submit([&]() {
-        m_callback.StoreVideoSettings(m_item, m_processInfo->GetVideoSettigs());
+        m_callback.StoreVideoSettings(m_item, m_processInfo->GetVideoSettings());
       }, CJob::PRIORITY_NORMAL);
 
       m_item = msg.GetItem();
@@ -4947,7 +4947,7 @@ std::string CVideoPlayer::GetPlayingTitle()
 
 CVideoSettings CVideoPlayer::GetVideoSettings()
 {
-  return m_processInfo->GetVideoSettigs();
+  return m_processInfo->GetVideoSettings();
 }
 
 void CVideoPlayer::SetVideoSettings(CVideoSettings& settings)
@@ -4974,7 +4974,7 @@ void CVideoPlayer::FlushRenderer()
 void CVideoPlayer::SetRenderViewMode(int mode, float zoom, float par, float shift, bool stretch)
 {
   m_processInfo->UpdateVideoSettigs().SetViewMode(mode, zoom, par, shift, stretch);
-  m_renderManager.SetVideoSettings(m_processInfo->GetVideoSettigs());
+  m_renderManager.SetVideoSettings(m_processInfo->GetVideoSettings());
   m_renderManager.SetViewMode(mode);
 }
 

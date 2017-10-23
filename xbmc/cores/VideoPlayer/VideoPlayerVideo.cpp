@@ -799,7 +799,7 @@ std::string CVideoPlayerVideo::GetStereoMode()
 {
   std::string  stereoMode;
 
-  switch(m_processInfo.GetVideoSettigs().m_StereoMode)
+  switch(m_processInfo.GetVideoSettings().m_StereoMode)
   {
     case RENDER_STEREO_MODE_SPLIT_VERTICAL:
       stereoMode = "left_right";
@@ -812,7 +812,7 @@ std::string CVideoPlayerVideo::GetStereoMode()
       break;
   }
 
-  if (m_processInfo.GetVideoSettigs().m_StereoInvert)
+  if (m_processInfo.GetVideoSettings().m_StereoInvert)
     stereoMode = GetStereoModeInvert(stereoMode);
 
   return stereoMode;
@@ -942,7 +942,7 @@ CVideoPlayerVideo::EOutputState CVideoPlayerVideo::OutputPicture(const VideoPict
   ProcessOverlays(pPicture, pPicture->pts);
 
   EINTERLACEMETHOD deintMethod = EINTERLACEMETHOD::VS_INTERLACEMETHOD_NONE;
-  deintMethod = m_processInfo.GetVideoSettigs().m_InterlaceMethod;
+  deintMethod = m_processInfo.GetVideoSettings().m_InterlaceMethod;
   if (!m_processInfo.Supports(deintMethod))
     deintMethod = m_processInfo.GetDeinterlacingMethodDefault();
 

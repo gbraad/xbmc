@@ -110,7 +110,7 @@ public:
   int64_t GetMaxTime();
 
   // settings
-  CVideoSettings GetVideoSettigs();
+  CVideoSettings GetVideoSettings();
   void SetVideoSettings(CVideoSettings &settings);
   CVideoSettings& UpdateVideoSettigs();
 
