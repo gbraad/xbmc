@@ -19,25 +19,31 @@
  */
 #pragma once
 
+class CCriticalSection;
+
 namespace KODI
 {
 namespace RETRO
 {
 
+// NOTE: Only append
 enum class SCALINGMETHOD
 {
-  AUTO,
-  NEAREST,
-  LINEAR,
+  AUTO = 0,
+  NEAREST = 1,
+  LINEAR = 2,
+  MAX = LINEAR
 };
 
-enum class ViewMode
+// NOTE: Only append
+enum class VIEWMODE
 {
-  Normal,
-  Stretch4x3,
-  Stretch16x9,
-  Stretch16x9Nonlin,
-  Original,
+  Normal = 0,
+  Stretch4x3 = 1,
+  Stretch16x9 = 2,
+  Stretch16x9Nonlin = 3,
+  Original = 4,
+  Max = Original
 };
 
 class CGameSettings
@@ -57,16 +63,15 @@ public:
   SCALINGMETHOD ScalingMethod() const { return m_scalingMethod; }
   void SetScalingMethod(SCALINGMETHOD scalingMethod);
 
-  enum ViewMode ViewMode() const { return m_viewMode; }
-  void SetViewMode(enum ViewMode viewMode);
+  VIEWMODE ViewMode() const { return m_viewMode; }
+  void SetViewMode(VIEWMODE viewMode);
 
 private:
   // Render settings
   SCALINGMETHOD m_scalingMethod;
-  ViewMode m_viewMode;
+  VIEWMODE m_viewMode;
 };
 
-class CCriticalSection;
 class CGameSettingsLocked
 {
 public:
@@ -77,7 +82,7 @@ public:
   void operator=(CGameSettingsLocked const &rhs) = delete;
 
   void SetScalingMethod(SCALINGMETHOD scalingMethod);
-  void SetViewMode(enum ViewMode viewMode);
+  void SetViewMode(VIEWMODE viewMode);
 
 protected:
   CGameSettings &m_gameSettings;

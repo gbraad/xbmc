@@ -26,16 +26,14 @@
 
 #include <memory>
 
-class CGameSettings;
-
 namespace KODI
 {
 namespace RETRO
 {
+  class CGameSettings;
   class CRPProcessInfo;
 
-  class CGUIGameSettings : public IGUIRenderSettings,
-                           public Observer
+  class CGUIGameSettings : public IGUIRenderSettings
   {
   public:
     CGUIGameSettings(CRPProcessInfo &processInfo);
@@ -44,17 +42,11 @@ namespace RETRO
     // implementation of IGUIRenderSettings
     CRenderSettings GetSettings() const override;
 
-    // implementation of Observer
-    void Notify(const Observable &obs, const ObservableMessage msg) override;
-
   private:
     void UpdateSettings();
 
     // Construction parameters
     CRPProcessInfo &m_processInfo;
-
-    // GUI parameters
-    CGameSettings &m_guiSettings;
 
     // Render parameters
     CRenderSettings m_renderSettings;

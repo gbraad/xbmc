@@ -54,8 +54,8 @@ public:
   const CVideoSettings& GetDefaultVideoSettings() const { return m_defaultVideoSettings; }
   CVideoSettings& GetDefaultVideoSettings() { return m_defaultVideoSettings; }
 
-  const CGameSettings& GetDefaultGameSettings() const { return m_defaultGameSettings; }
-  CGameSettings& GetDefaultGameSettings() { return m_defaultGameSettings; }
+  const KODI::RETRO::CGameSettings& GetDefaultGameSettings() const { return m_defaultGameSettings; }
+  KODI::RETRO::CGameSettings& GetDefaultGameSettings() { return m_defaultGameSettings; }
 
   /*! \brief Retrieve the watched mode for the given content type
    \param content Current content type
@@ -104,7 +104,7 @@ protected:
 private:
   CVideoSettings m_defaultVideoSettings;
 
-  CGameSettings m_defaultGameSettings;
+  KODI::RETRO::CGameSettings m_defaultGameSettings;
 
   typedef std::map<std::string, WatchedMode> WatchedModes;
   WatchedModes m_watchedModes;

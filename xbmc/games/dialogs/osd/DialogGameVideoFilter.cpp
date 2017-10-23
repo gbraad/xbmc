@@ -20,9 +20,9 @@
 
 #include "DialogGameVideoFilter.h"
 #include "cores/RetroPlayer/rendering/GUIGameVideoHandle.h"
+#include "cores/GameSettings.h"
 #include "guilib/LocalizeStrings.h"
 #include "guilib/WindowIDs.h"
-#include "settings/GameSettings.h"
 #include "settings/MediaSettings.h"
 #include "utils/StringUtils.h"
 #include "utils/Variant.h"
@@ -37,13 +37,13 @@ namespace
     int nameIndex;
     int categoryIndex;
     int descriptionIndex;
-    ESCALINGMETHOD scalingMethod;
+    RETRO::SCALINGMETHOD scalingMethod;
   };
 
   const std::vector<ScalingMethodProperties> scalingMethods =
   {
-    { 16301, 16296, 16298, VS_SCALINGMETHOD_NEAREST },
-    { 16302, 16297, 16299, VS_SCALINGMETHOD_LINEAR },
+    { 16301, 16296, 16298, RETRO::SCALINGMETHOD::NEAREST },
+    { 16302, 16297, 16299, RETRO::SCALINGMETHOD::LINEAR },
   };
 }
 
@@ -82,7 +82,7 @@ void CDialogGameVideoFilter::InitScalingMethods()
       {
         CFileItemPtr item = std::make_shared<CFileItem>(g_localizeStrings.Get(scalingMethodProps.nameIndex));
         item->SetLabel2(g_localizeStrings.Get(scalingMethodProps.categoryIndex));
-        item->SetProperty("game.scalingmethod", CVariant{ scalingMethodProps.scalingMethod });
+        item->SetProperty("game.scalingmethod", CVariant{ static_cast<int>(scalingMethodProps.scalingMethod) });
         item->SetProperty("game.videofilterdescription", CVariant{ g_localizeStrings.Get(scalingMethodProps.descriptionIndex) });
         m_items.Add(std::move(item));
       }
@@ -98,20 +98,19 @@ void CDialogGameVideoFilter::GetItems(CFileItemList &items)
 
 void CDialogGameVideoFilter::OnItemFocus(unsigned int index)
 {
-  if (static_cast<int>(index) < m_items.Size())
+  if (static_cast<int>(index) < m_items.Size() && m_gameVideoHandle)
   {
     CFileItemPtr item = m_items[index];
 
-    ESCALINGMETHOD scalingMethod;
+    RETRO::SCALINGMETHOD scalingMethod;
     std::string description;
     GetProperties(*item, scalingMethod, description);
 
-    CGameSettings &gameSettings = CMediaSettings::GetInstance().GetCurrentGameSettings();
+    RETRO::CGameSettings gameSettings = m_gameVideoHandle->GetGameSettings();
 
     if (gameSettings.ScalingMethod() != scalingMethod)
     {
-      gameSettings.SetScalingMethod(scalingMethod);
-      gameSettings.NotifyObservers(ObservableMessageSettingsChanged);
+      m_gameVideoHandle->SetScalingMethod(scalingMethod);
 
       OnDescriptionChange(description);
       m_bHasDescription = true;
@@ -126,17 +125,20 @@ void CDialogGameVideoFilter::OnItemFocus(unsigned int index)
 
 unsigned int CDialogGameVideoFilter::GetFocusedItem() const
 {
-  CGameSettings &gameSettings = CMediaSettings::GetInstance().GetCurrentGameSettings();
-
-  for (int i = 0; i < m_items.Size(); i++)
+  if (m_gameVideoHandle)
   {
-    ESCALINGMETHOD scalingMethod;
-    std::string description;
-    GetProperties(*m_items[i], scalingMethod, description);
+    RETRO::CGameSettings gameSettings = m_gameVideoHandle->GetGameSettings();
 
-    if (scalingMethod == gameSettings.ScalingMethod())
+    for (int i = 0; i < m_items.Size(); i++)
     {
-      return i;
+      RETRO::SCALINGMETHOD scalingMethod;
+      std::string description;
+      GetProperties(*m_items[i], scalingMethod, description);
+
+      if (scalingMethod == gameSettings.ScalingMethod())
+      {
+        return i;
+      }
     }
   }
 
@@ -148,12 +150,12 @@ void CDialogGameVideoFilter::PostExit()
   m_items.Clear();
 }
 
-void CDialogGameVideoFilter::GetProperties(const CFileItem &item, ESCALINGMETHOD &scalingMethod, std::string &description)
+void CDialogGameVideoFilter::GetProperties(const CFileItem &item, RETRO::SCALINGMETHOD &scalingMethod, std::string &description)
 {
-  scalingMethod = VS_SCALINGMETHOD_AUTO;
+  scalingMethod = RETRO::SCALINGMETHOD::AUTO;
   description = item.GetProperty("game.videofilterdescription").asString();
 
   std::string strScalingMethod = item.GetProperty("game.scalingmethod").asString();
   if (StringUtils::IsNaturalNumber(strScalingMethod))
-    scalingMethod = static_cast<ESCALINGMETHOD>(item.GetProperty("game.scalingmethod").asUnsignedInteger());
+    scalingMethod = static_cast<RETRO::SCALINGMETHOD>(item.GetProperty("game.scalingmethod").asUnsignedInteger());
 }

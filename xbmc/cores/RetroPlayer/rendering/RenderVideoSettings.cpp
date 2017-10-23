@@ -25,8 +25,8 @@ using namespace RETRO;
 
 void CRenderVideoSettings::Reset()
 {
-  m_scalingMethod = VS_SCALINGMETHOD_AUTO;
-  m_viewMode = ViewModeNormal;
+  m_scalingMethod = SCALINGMETHOD::AUTO;
+  m_viewMode = VIEWMODE::Normal;
 }
 
 bool CRenderVideoSettings::operator==(const CRenderVideoSettings &rhs) const

@@ -172,7 +172,7 @@ bool CGUIGameRenderManager::SupportsRenderFeature(ERENDERFEATURE feature)
   return false;
 }
 
-bool CGUIGameRenderManager::SupportsScalingMethod(ESCALINGMETHOD method)
+bool CGUIGameRenderManager::SupportsScalingMethod(SCALINGMETHOD method)
 {
   CSingleLock lock(m_callbackMutex);
 
@@ -180,6 +180,33 @@ bool CGUIGameRenderManager::SupportsScalingMethod(ESCALINGMETHOD method)
     return m_callback->SupportsScalingMethod(method);
 
   return false;
+}
+
+
+CGameSettings CGUIGameRenderManager::GetGameSettings()
+{
+  CSingleLock lock(m_callbackMutex);
+
+  if (m_callback != nullptr)
+    return m_callback->GetGameSettings();
+
+  return CGameSettings();
+}
+
+bool CGUIGameRenderManager::SetScalingMethod(SCALINGMETHOD method)
+{
+  CSingleLock lock(m_callbackMutex);
+
+  if (m_callback != nullptr)
+    m_callback->SetScalingMethod(method);
+}
+
+bool CGUIGameRenderManager::SetViewMode(VIEWMODE viewMode)
+{
+  CSingleLock lock(m_callbackMutex);
+
+  if (m_callback != nullptr)
+    m_callback->SetViewMode(viewMode);
 }
 
 void CGUIGameRenderManager::UpdateRenderTargets()

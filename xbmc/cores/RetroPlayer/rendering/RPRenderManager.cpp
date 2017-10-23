@@ -31,7 +31,6 @@
 #include "cores/RetroPlayer/rendering/VideoRenderers/RPBaseRenderer.h"
 #include "guilib/TransformMatrix.h"
 #include "messaging/ApplicationMessenger.h"
-#include "settings/GameSettings.h"
 #include "threads/SingleLock.h"
 #include "utils/log.h"
 
@@ -48,7 +47,6 @@ CRPRenderManager::CRPRenderManager(CRPProcessInfo &processInfo) :
   m_processInfo(processInfo),
   m_renderContext(processInfo.GetRenderContext()),
   m_speed(1.0),
-  m_renderSettings(new CGUIGameSettings(processInfo)),
   m_renderControlFactory(new CGUIRenderTargetFactory(this))
 {
 }
@@ -262,7 +260,7 @@ bool CRPRenderManager::SupportsRenderFeature(ERENDERFEATURE feature) const
   return false;
 }
 
-bool CRPRenderManager::SupportsScalingMethod(ESCALINGMETHOD method) const
+bool CRPRenderManager::SupportsScalingMethod(SCALINGMETHOD method) const
 {
   //! @todo Move to ProcessInfo
   for (IRenderBufferPool *bufferPool : m_processInfo.GetBufferManager().GetBufferPools())
@@ -274,6 +272,26 @@ bool CRPRenderManager::SupportsScalingMethod(ESCALINGMETHOD method) const
   }
 
   return false;
+}
+
+CGameSettings CRPRenderManager::GetGameSettings()
+{
+
+  CRenderVideoSettings renderSettings = m_renderSettings->GetSettings().VideoSettings();
+  CGameSettings gameSettings;
+
+
+  return ;
+}
+
+void CRPRenderManager::SetScalingMethod(SCALINGMETHOD method)
+{
+  m_renderSettings->GetSettings().VideoSettings().SetScalingMethod(method);
+}
+
+void CRPRenderManager::SetViewMode(VIEWMODE viewMode)
+{
+  m_renderSettings->GetSettings().VideoSettings().SetRenderViewMode(viewMode);
 }
 
 void CRPRenderManager::RenderInternal(const std::shared_ptr<CRPBaseRenderer> &renderer, bool bClear, uint32_t alpha)

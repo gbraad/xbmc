@@ -19,6 +19,7 @@
  */
 #pragma once
 
+#include "cores/GameSettings.h"
 #include "cores/IPlayer.h"
 #include "threads/CriticalSection.h"
 
@@ -70,7 +71,10 @@ namespace RETRO
     void UnregisterHandle(CGUIGameVideoHandle *handle) { }
     bool IsPlayingGame();
     bool SupportsRenderFeature(ERENDERFEATURE feature);
-    bool SupportsScalingMethod(ESCALINGMETHOD method);
+    bool SupportsScalingMethod(SCALINGMETHOD method);
+    CGameSettings GetGameSettings();
+    bool SetScalingMethod(SCALINGMETHOD method);
+    bool SetViewMode(VIEWMODE viewMode);
 
   private:
     void UpdateRenderTargets();

@@ -42,7 +42,7 @@ CGameSettings &CGameSettings::operator=(const CGameSettings &rhs)
 void CGameSettings::Reset()
 {
   m_scalingMethod = SCALINGMETHOD::AUTO;
-  m_viewMode = ViewMode::Normal;
+  m_viewMode = VIEWMODE::Normal;
 }
 
 bool CGameSettings::operator==(const CGameSettings &rhs) const
@@ -66,7 +66,7 @@ void CGameSettingsLocked::SetScalingMethod(SCALINGMETHOD scalingMethod)
   m_gameSettings.SetScalingMethod(scalingMethod);
 }
 
-void CGameSettingsLocked::SetViewMode(ViewMode viewMode)
+void CGameSettingsLocked::SetViewMode(VIEWMODE viewMode)
 {
   CSingleLock lock(m_critSection);
   m_gameSettings.SetViewMode(viewMode);

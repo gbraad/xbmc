@@ -44,6 +44,7 @@
 #include "utils/Variant.h"
 #include "video/VideoDatabase.h"
 
+using namespace KODI;
 using namespace KODI::MESSAGING;
 
 using KODI::MESSAGING::HELPERS::DialogResponse;
@@ -132,12 +133,12 @@ bool CMediaSettings::Load(const TiXmlNode *settings)
   if (pElement != nullptr)
   {
     int scalingMethod;
-    if (XMLUtils::GetInt(pElement, "scalingmethod", scalingMethod, VS_SCALINGMETHOD_NEAREST, VS_SCALINGMETHOD_MAX))
-      m_defaultGameSettings.SetScalingMethod(static_cast<ESCALINGMETHOD>(scalingMethod));
+    if (XMLUtils::GetInt(pElement, "scalingmethod", scalingMethod, static_cast<int>(RETRO::SCALINGMETHOD::AUTO), static_cast<int>(RETRO::SCALINGMETHOD::MAX)))
+      m_defaultGameSettings.SetScalingMethod(static_cast<RETRO::SCALINGMETHOD>(scalingMethod));
 
     int viewMode;
-    if (XMLUtils::GetInt(pElement, "viewmode", viewMode, ViewModeNormal, ViewModeZoom110Width))
-      m_defaultGameSettings.SetViewMode(static_cast<ViewMode>(viewMode));
+    if (XMLUtils::GetInt(pElement, "viewmode", viewMode, static_cast<int>(RETRO::VIEWMODE::Normal), static_cast<int>(RETRO::VIEWMODE::Max)))
+      m_defaultGameSettings.SetViewMode(static_cast<RETRO::VIEWMODE>(viewMode));
   }
 
   // mymusic settings
@@ -233,8 +234,8 @@ bool CMediaSettings::Save(TiXmlNode *settings) const
   if (pNode == nullptr)
     return false;
 
-  XMLUtils::SetInt(pNode, "scalingmethod", m_defaultGameSettings.ScalingMethod());
-  XMLUtils::SetInt(pNode, "viewmode", m_defaultGameSettings.ViewMode());
+  XMLUtils::SetInt(pNode, "scalingmethod", static_cast<int>(m_defaultGameSettings.ScalingMethod()));
+  XMLUtils::SetInt(pNode, "viewmode", static_cast<int>(m_defaultGameSettings.ViewMode()));
 
   // mymusic
   pNode = settings->FirstChild("mymusic");

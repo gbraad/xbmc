@@ -19,6 +19,7 @@
  */
 #pragma once
 
+#include "cores/GameSettings.h"
 #include "cores/IPlayer.h"
 
 namespace KODI
@@ -31,7 +32,10 @@ namespace RETRO
     virtual ~IRenderCallback() = default;
 
     virtual bool SupportsRenderFeature(ERENDERFEATURE feature) const = 0;
-    virtual bool SupportsScalingMethod(ESCALINGMETHOD method) const = 0;
+    virtual bool SupportsScalingMethod(SCALINGMETHOD method) const = 0;
+    virtual CGameSettings GetGameSettings() = 0;
+    virtual void SetScalingMethod(SCALINGMETHOD method) = 0;
+    virtual void SetViewMode(VIEWMODE viewMode) = 0;
   };
 }
 }

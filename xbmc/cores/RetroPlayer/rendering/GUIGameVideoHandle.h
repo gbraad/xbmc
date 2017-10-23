@@ -19,6 +19,7 @@
  */
 #pragma once
 
+#include "cores/GameSettings.h"
 #include "cores/IPlayer.h"
 
 namespace KODI
@@ -35,7 +36,10 @@ namespace RETRO
 
     bool IsPlayingGame();
     bool SupportsRenderFeature(ERENDERFEATURE feature);
-    bool SupportsScalingMethod(ESCALINGMETHOD method);
+    bool SupportsScalingMethod(SCALINGMETHOD method);
+    CGameSettings GetGameSettings();
+    bool SetScalingMethod(SCALINGMETHOD method);
+    bool SetViewMode(VIEWMODE viewMode);
 
   private:
     // Construction parameters

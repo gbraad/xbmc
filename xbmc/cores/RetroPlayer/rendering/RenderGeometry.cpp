@@ -19,7 +19,6 @@
  */
 
 #include "RenderGeometry.h"
-#include "settings/GameSettings.h"
 #include "settings/MediaSettings.h"
 
 using namespace KODI;

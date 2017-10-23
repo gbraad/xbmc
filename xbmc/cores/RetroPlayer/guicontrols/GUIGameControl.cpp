@@ -25,11 +25,11 @@
 #include "cores/RetroPlayer/rendering/RenderGeometry.h"
 #include "cores/RetroPlayer/rendering/RenderSettings.h"
 #include "cores/RetroPlayer/rendering/RenderVideoSettings.h"
+#include "cores/GameSettings.h"
 #include "games/GameServices.h"
 #include "guilib/Geometry.h"
 #include "guilib/GraphicContext.h"
 #include "guilib/TransformMatrix.h"
-#include "settings/GameSettings.h"
 #include "settings/MediaSettings.h"
 #include "utils/StringUtils.h"
 #include "Application.h"
@@ -144,7 +144,7 @@ void CGUIGameControl::UpdateInfo(const CGUIListItem *item /* = nullptr */)
     {
       unsigned int scalingMethod;
       std::istringstream(std::move(strScalingMethod)) >> scalingMethod;
-      m_renderSettings->SetScalingMethod(static_cast<ESCALINGMETHOD>(scalingMethod));
+      m_renderSettings->SetScalingMethod(static_cast<SCALINGMETHOD>(scalingMethod));
       m_bHasScalingMethod = true;
     }
 
@@ -153,7 +153,7 @@ void CGUIGameControl::UpdateInfo(const CGUIListItem *item /* = nullptr */)
     {
       unsigned int viewMode;
       std::istringstream(std::move(strViewMode)) >> viewMode;
-      m_renderSettings->SetViewMode(static_cast<ViewMode>(viewMode));
+      m_renderSettings->SetViewMode(static_cast<VIEWMODE>(viewMode));
       m_bHasViewMode = true;
     }
   }

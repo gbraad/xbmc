@@ -67,6 +67,11 @@ namespace RETRO
     void SetDataCache(CDataCacheCore *cache);
     void ResetInfo();
 
+    // Game settings
+    CGameSettings GetGameSettings();
+    void SetGameSettings(const CGameSettings &settings);
+    CGameSettingsLocked& UpdateGameSettigs();
+
     // rendering info
     virtual ESCALINGMETHOD GetDefaultScalingMethod() const { return VS_SCALINGMETHOD_NEAREST; }
     CRenderContext &GetRenderContext() { return *m_renderContext; }

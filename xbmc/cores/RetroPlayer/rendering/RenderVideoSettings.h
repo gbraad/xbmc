@@ -19,7 +19,7 @@
  */
 #pragma once
 
-#include "cores/IPlayer.h"
+#include "cores/GameSettings.h"
 
 namespace KODI
 {
@@ -37,15 +37,15 @@ namespace RETRO
     bool operator<(const CRenderVideoSettings &rhs) const;
     bool operator>(const CRenderVideoSettings &rhs) const { return !(*this == rhs || *this < rhs); }
 
-    ESCALINGMETHOD GetScalingMethod() const { return m_scalingMethod; }
-    void SetScalingMethod(ESCALINGMETHOD method) { m_scalingMethod = method; }
+    SCALINGMETHOD GetScalingMethod() const { return m_scalingMethod; }
+    void SetScalingMethod(SCALINGMETHOD method) { m_scalingMethod = method; }
 
-    ViewMode GetRenderViewMode() const { return m_viewMode; }
-    void SetRenderViewMode(ViewMode mode) { m_viewMode = mode; }
+    VIEWMODE GetRenderViewMode() const { return m_viewMode; }
+    void SetRenderViewMode(VIEWMODE mode) { m_viewMode = mode; }
 
   private:
-    ESCALINGMETHOD m_scalingMethod;
-    ViewMode m_viewMode;
+    SCALINGMETHOD m_scalingMethod;
+    VIEWMODE m_viewMode;
   };
 }
 }

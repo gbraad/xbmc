@@ -245,11 +245,6 @@ RESOLUTION_INFO &CRenderContext::GetResolutionInfo(RESOLUTION resolution)
   return m_displaySettings.GetResolutionInfo(resolution);
 }
 
-CGameSettings &CRenderContext::GetGameSettings()
-{
-  return m_mediaSettings.GetCurrentGameSettings();
-}
-
 CGameSettings &CRenderContext::GetDefaultGameSettings()
 {
   return m_mediaSettings.GetDefaultGameSettings();
