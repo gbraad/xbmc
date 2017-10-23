@@ -1261,8 +1261,10 @@ void CVideoPlayer::Prepare()
   m_CurrentAudio.lastdts = DVD_NOPTS_VALUE;
   m_CurrentVideo.lastdts = DVD_NOPTS_VALUE;
 
-  CJobManager::GetInstance().Submit([&]() {
-    m_callback.RequestVideoSettings(m_item);
+  IPlayerCallback *cb = &m_callback;
+  CFileItem fileItem = m_item;
+  CJobManager::GetInstance().Submit([=]() {
+    cb->RequestVideoSettings(fileItem);
   }, CJob::PRIORITY_NORMAL);
 
   if (!OpenInputStream())
