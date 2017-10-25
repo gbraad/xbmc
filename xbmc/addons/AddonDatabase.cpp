@@ -348,7 +348,7 @@ void CAddonDatabase::SyncInstalled(const std::set<std::string>& ids,
     BeginTransaction();
     for (const auto& id : added)
     {
-      int enable = 1;
+      int enable = 0;
 
       if (system.find(id) != system.end() || optional.find(id) != optional.end())
         enable = 1;
