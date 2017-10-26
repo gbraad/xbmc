@@ -340,7 +340,7 @@ bool CGameClient::OpenStandalone(IGameAudioCallback* audio, IGameVideoCallback* 
 
 bool CGameClient::InitializeGameplay(const std::string& gamePath, IGameAudioCallback* audio, IGameVideoCallback* video, IGameInputCallback *input)
 {
-  if (LoadGameInfo() && NormalizeAudio(audio))
+  if (LoadGameInfo())
   {
     m_bIsPlaying      = true;
     m_gamePath        = gamePath;
@@ -365,33 +365,6 @@ bool CGameClient::InitializeGameplay(const std::string& gamePath, IGameAudioCall
   }
 
   return false;
-}
-
-bool CGameClient::NormalizeAudio(IGameAudioCallback* audioCallback)
-{
-  unsigned int originalSampleRate = m_timing.GetSampleRate();
-
-  if (m_timing.NormalizeAudio(audioCallback))
-  {
-    const bool bChanged = (originalSampleRate != m_timing.GetSampleRate());
-    if (bChanged)
-    {
-      CLog::Log(LOGDEBUG, "GAME: Correcting audio and video by %f to avoid resampling", m_timing.GetCorrectionFactor());
-      CLog::Log(LOGDEBUG, "GAME: Audio sample rate normalized to %u", m_timing.GetSampleRate());
-      CLog::Log(LOGDEBUG, "GAME: Video frame rate scaled to %f", m_timing.GetFrameRate());
-    }
-    else
-    {
-      CLog::Log(LOGDEBUG, "GAME: Audio sample rate is supported, no scaling or resampling needed");
-    }
-  }
-  else
-  {
-    CLog::Log(LOGERROR, "GAME: Failed to normalize audio sample rate: exceeds %u%% difference", CGameClientTiming::MAX_CORRECTION_FACTOR_PERCENT);
-    return false;
-  }
-
-  return true;
 }
 
 bool CGameClient::LoadGameInfo()
@@ -422,8 +395,8 @@ bool CGameClient::LoadGameInfo()
   CLog::Log(LOGINFO, "GAME: Region:       %s", CGameClientTranslator::TranslateRegion(region));
   CLog::Log(LOGINFO, "GAME: ---------------------------------------");
 
-  m_timing.SetFrameRate(av_info.timing.fps);
-  m_timing.SetSampleRate(av_info.timing.sample_rate);
+  m_framerate = av_info.timing.fps;
+  m_samplerate = av_info.timing.sample_rate;
   m_region = region;
 
   return true;
@@ -484,7 +457,7 @@ void CGameClient::CreatePlayback()
 
   if (bRequiresGameLoop)
   {
-    m_playback.reset(new CGameClientReversiblePlayback(this, m_timing.GetFrameRate(), m_serializeSize));
+    m_playback.reset(new CGameClientReversiblePlayback(this, m_framerate, m_serializeSize));
   }
   else
   {
@@ -544,7 +517,6 @@ void CGameClient::CloseFile()
   m_audio = nullptr;
   m_video = nullptr;
   m_input = nullptr;
-  m_timing.Reset();
 }
 
 void CGameClient::RunFrame()
@@ -638,7 +610,13 @@ bool CGameClient::OpenPCMStream(GAME_PCM_FORMAT format, const GAME_AUDIO_CHANNEL
     channelLayout += channel;
   }
 
-  return m_audio->OpenPCMStream(pcmFormat, m_timing.GetSampleRate(), channelLayout);
+  if (!m_audio->OpenPCMStream(pcmFormat, m_samplerate, channelLayout))
+  {
+    m_audio = nullptr;
+    return false;
+  }
+
+  return true;
 }
 
 bool CGameClient::OpenAudioStream(GAME_AUDIO_CODEC codec, const GAME_AUDIO_CHANNEL* channelMap)
@@ -665,7 +643,13 @@ bool CGameClient::OpenAudioStream(GAME_AUDIO_CODEC codec, const GAME_AUDIO_CHANN
     channelLayout += channel;
   }
 
-  return m_audio->OpenEncodedStream(audioCodec, m_timing.GetSampleRate(), channelLayout);
+  if (!m_audio->OpenEncodedStream(audioCodec, m_samplerate, channelLayout))
+  {
+    m_audio = nullptr;
+    return false;
+  }
+
+  return true;
 }
 
 void CGameClient::AddStreamData(GAME_STREAM_TYPE stream, const uint8_t* data, unsigned int size)
