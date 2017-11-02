@@ -2561,9 +2561,6 @@ void CApplication::OnApplicationMessage(ThreadMessage* pMsg)
     if (g_application.m_pPlayer->IsPlayingVideo() || g_application.m_pPlayer->IsPlayingGame())
       g_application.StopPlaying();
 
-    if (g_windowManager.GetActiveWindow() == WINDOW_FULLSCREEN_VIDEO)
-      g_windowManager.PreviousWindow();
-
     g_application.ResetScreenSaver();
     g_application.WakeUpScreenSaverAndDPMS();
 
