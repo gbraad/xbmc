@@ -1589,7 +1589,7 @@ bool CApplication::LoadSkin(const std::string& skinID)
     GAME,
   } previousRenderingState = RENDERING_STATE::NONE;
 
-  if (m_pPlayer->IsPlayingVideo())
+  if (m_pPlayer->IsPlayingVideo() || m_pPlayer->IsPlayingGame())
   {
     bPreviousPlayingState = !m_pPlayer->IsPausedPlayback();
     if (bPreviousPlayingState)
@@ -1703,7 +1703,7 @@ bool CApplication::LoadSkin(const std::string& skinID)
   }
 
   // restore player and rendering state
-  if (m_pPlayer->IsPlayingVideo())
+  if (m_pPlayer->IsPlayingVideo() || m_pPlayer->IsPlayingGame())
   {
     if (bPreviousPlayingState)
       m_pPlayer->Pause();
@@ -2558,7 +2558,8 @@ void CApplication::OnApplicationMessage(ThreadMessage* pMsg)
     if (!pSlideShow) return;
 
     // stop playing file
-    if (g_application.m_pPlayer->IsPlayingVideo()) g_application.StopPlaying();
+    if (g_application.m_pPlayer->IsPlayingVideo() || g_application.m_pPlayer->IsPlayingGame())
+      g_application.StopPlaying();
 
     if (g_windowManager.GetActiveWindow() == WINDOW_FULLSCREEN_VIDEO)
       g_windowManager.PreviousWindow();
@@ -2606,7 +2607,7 @@ void CApplication::OnApplicationMessage(ThreadMessage* pMsg)
     CGUIWindowSlideShow *pSlideShow = g_windowManager.GetWindow<CGUIWindowSlideShow>(WINDOW_SLIDESHOW);
     if (!pSlideShow) return;
 
-    if (g_application.m_pPlayer->IsPlayingVideo())
+    if (g_application.m_pPlayer->IsPlayingVideo() || g_application.m_pPlayer->IsPlayingGame())
       g_application.StopPlaying();
 
     g_graphicsContext.Lock();
@@ -2741,9 +2742,9 @@ void CApplication::FrameMove(bool processEvents, bool processGUI)
       m_frameMoveGuard.unlock();
 
       // Calculate a window size between 2 and 10ms, 4 continuous requests let the window grow by 1ms
-      // When not playing video we allow it to increase to 80ms
+      // When not playing video or game we allow it to increase to 80ms
       unsigned int max_sleep = 10;
-      if (!m_pPlayer->IsPlayingVideo() || m_pPlayer->IsPausedPlayback())
+      if (!(m_pPlayer->IsPlayingVideo() || m_pPlayer->IsPlayingGame()) || m_pPlayer->IsPausedPlayback())
         max_sleep = 80;
       unsigned int sleepTime = std::max(static_cast<unsigned int>(2), std::min(m_ProcessedExternalCalls >> 2, max_sleep));
       Sleep(sleepTime);
@@ -3477,7 +3478,7 @@ PlayBackRet CApplication::PlayFile(CFileItem item, const std::string& player, bo
       if (g_windowManager.GetActiveWindow() == WINDOW_FULLSCREEN_VIDEO)
         g_windowManager.ActivateWindow(WINDOW_VISUALISATION);
     }
-    else if(m_pPlayer->IsPlayingVideo())
+    else if (m_pPlayer->IsPlayingVideo() || m_pPlayer->IsPlayingGame())
     {
       // if player didn't manage to switch to fullscreen by itself do it here
       if (options.fullscreen && m_pPlayer->IsRenderingVideo() &&
@@ -3537,7 +3538,7 @@ void CApplication::OnPlayBackStarted(const CFileItem &file)
   g_pythonParser.OnPlayBackStarted(file);
 #endif
 #if defined(TARGET_DARWIN_IOS)
-  if (m_pPlayer->IsPlayingVideo())
+  if (m_pPlayer->IsPlayingVideo() || m_pPlayer->IsPlayingGame())
     CDarwinUtils::EnableOSScreenSaver(false);
 #endif
 
@@ -3614,7 +3615,7 @@ void CApplication::OnPlayBackResumed()
   g_pythonParser.OnPlayBackResumed();
 #endif
 #if defined(TARGET_DARWIN_IOS)
-  if (m_pPlayer->IsPlayingVideo())
+  if (m_pPlayer->IsPlayingVideo() || m_pPlayer->IsPlayingGame())
     CDarwinUtils::EnableOSScreenSaver(false);
 #endif
 
@@ -3695,7 +3696,7 @@ void CApplication::StoreVideoSettings(const CFileItem &fileItem, CVideoSettings 
 
 bool CApplication::IsPlayingFullScreenVideo() const
 {
-  return m_pPlayer->IsPlayingVideo() && g_graphicsContext.IsFullScreenVideo();
+  return m_pPlayer->IsPlayingVideo() && g_graphicsContext.IsFullScreenVideo(); //! @todo
 }
 
 bool CApplication::IsFullScreen()
@@ -3761,7 +3762,7 @@ void CApplication::UpdateFileState()
       }
 
       // Check whether we're *really* playing video else we may race when getting eg. stream details
-      if (m_pPlayer->IsPlayingVideo() && !m_pPlayer->IsPlayingGame())
+      if (m_pPlayer->IsPlayingVideo())
       {
         /* Always update streamdetails, except for DVDs where we only update
            streamdetails if total duration > 15m (Should yield more correct info) */
@@ -4023,6 +4024,10 @@ void CApplication::CheckScreenSaverAndDPMS()
   if (m_pPlayer->IsPlayingVideo() && !m_pPlayer->IsPaused())
     haveIdleActivity = true;
 
+  // Are we playing a game and it is not paused?
+  else if (m_pPlayer->IsPlayingGame() && !m_pPlayer->IsPaused())
+    haveIdleActivity = true;
+
   // Are we playing some music in fullscreen vis?
   else if (m_pPlayer->IsPlayingAudio() &&
            g_windowManager.GetActiveWindow() == WINDOW_VISUALISATION &&
@@ -4049,10 +4054,19 @@ void CApplication::CheckScreenSaverAndDPMS()
     maybeScreensaver = false;
   }
 
-  if (m_screensaverActive && m_pPlayer->IsPlayingVideo() && !m_pPlayer->IsPaused())
+  if (m_screensaverActive)
   {
-    WakeUpScreenSaverAndDPMS();
-    return;
+    if (m_pPlayer->IsPlayingVideo() && !m_pPlayer->IsPaused())
+    {
+      WakeUpScreenSaverAndDPMS();
+      return;
+    }
+
+    if (m_pPlayer->IsPlayingGame() && !m_pPlayer->IsPaused())
+    {
+      WakeUpScreenSaverAndDPMS();
+      return;
+    }
   }
 
   if (!maybeScreensaver && !maybeDPMS) return;  // Nothing to do.
@@ -4360,7 +4374,7 @@ bool CApplication::OnMessage(CGUIMessage& message)
         g_audioManager.Enable(true);
       }
 
-      if (!m_pPlayer->IsPlayingVideo())
+      if (!m_pPlayer->IsPlayingVideo() && !m_pPlayer->IsPlayingGame())
       {
         if(g_windowManager.GetActiveWindow() == WINDOW_FULLSCREEN_VIDEO ||
            g_windowManager.GetActiveWindow() == WINDOW_FULLSCREEN_GAME)
@@ -4590,7 +4604,7 @@ void CApplication::ProcessSlow()
   CheckDelayedPlayerRestart();
 
   //  check if we can unload any unreferenced dlls or sections
-  if (!m_pPlayer->IsPlayingVideo())
+  if (!m_pPlayer->IsPlayingVideo() && !m_pPlayer->IsPlayingGame())
     CSectionLoader::UnloadDelayed();
 
 #ifdef TARGET_ANDROID
@@ -4683,7 +4697,7 @@ void CApplication::Restart(bool bSamePosition)
   // and which means we gotta close & reopen the current playing file
 
   // first check if we're playing a file
-  if ( !m_pPlayer->IsPlayingVideo() && !m_pPlayer->IsPlayingAudio())
+  if (!m_pPlayer->IsPlayingVideo() && !m_pPlayer->IsPlayingAudio() && !m_pPlayer->IsPlayingGame())
     return ;
 
   if( !m_pPlayer->HasPlayer() )

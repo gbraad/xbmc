@@ -93,7 +93,8 @@ void CDetectDVDMedia::Process()
 
   while (( !m_bStop ))
   {
-    if (g_application.m_pPlayer->IsPlayingVideo())
+    if (g_application.m_pPlayer->IsPlayingVideo() ||
+        g_application.m_pPlayer->IsPlayingGame())
     {
       Sleep(10000);
     }

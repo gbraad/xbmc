@@ -338,7 +338,7 @@ void CGraphicContext::SetFullScreenVideo(bool bOnOff)
       bool allowDesktopRes = CServiceBroker::GetSettings().GetInt(CSettings::SETTING_VIDEOPLAYER_ADJUSTREFRESHRATE) == ADJUST_REFRESHRATE_ALWAYS;
       if (!allowDesktopRes)
       {
-        if (g_application.m_pPlayer->IsPlayingVideo())
+        if (g_application.m_pPlayer->IsPlayingVideo() || g_application.m_pPlayer->IsPlayingGame())
           bTriggerUpdateRes = true;
       }
     }
