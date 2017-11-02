@@ -4281,8 +4281,14 @@ bool CApplication::OnMessage(CGUIMessage& message)
         XFILE::CPluginDirectory::GetPluginResult(url.Get(), file, false);
 
       // Don't queue if next media type is different from current one
-      if ((!file.IsVideo() && m_pPlayer->IsPlayingVideo())
-          || ((!file.IsAudio() || file.IsVideo()) && m_pPlayer->IsPlayingAudio()))
+      bool bNothingToQueue = false;
+
+      if (!file.IsVideo() && m_pPlayer->IsPlayingVideo())
+        bNothingToQueue = true;
+      else if ((!file.IsAudio() || file.IsVideo()) && m_pPlayer->IsPlayingAudio())
+        bNothingToQueue = true;
+
+      if (bNothingToQueue)
       {
         m_pPlayer->OnNothingToQueueNotify();
         return true;
