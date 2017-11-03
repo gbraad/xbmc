@@ -239,14 +239,7 @@ void CScreenShot::TakeScreenshot()
   // check to see if we have a screenshot folder yet
   std::shared_ptr<CSettingPath> screenshotSetting = std::static_pointer_cast<CSettingPath>(CServiceBroker::GetSettings().GetSetting(CSettings::SETTING_DEBUG_SCREENSHOTPATH));
   if (screenshotSetting != NULL)
-  {
     strDir = screenshotSetting->GetValue();
-    if (strDir.empty())
-    {
-      if (CGUIControlButtonSetting::GetPath(screenshotSetting, &g_localizeStrings))
-        strDir = screenshotSetting->GetValue();
-    }
-  }
 
   if (strDir.empty())
   {
