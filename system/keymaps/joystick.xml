@@ -147,7 +147,7 @@
       <leftstick direction="right" hotkey="back">SaveSlotIncrease</leftstick>
       -->
       <!-- Merged -->
-      <a hotkey="back">Screenshot</a>
+      <!--<a hotkey="back">Screenshot</a>-->
       <b hotkey="back">PlayerControl(Reset)</b>
       <x hotkey="back">OSD</x>
       <y hotkey="back">FullScreen</y>
