@@ -27,7 +27,7 @@ SET WORKSPACE=%CD%
 POPD
 
 set msysver=20161025
-set msys2=msys64
+set msys2=msys32
 set instdir=%WORKSPACE%\project\BuildDependencies
 set msyspackages=diffutils gcc make patch perl tar yasm
 set gaspreprocurl=https://github.com/FFmpeg/gas-preprocessor/archive/master.tar.gz

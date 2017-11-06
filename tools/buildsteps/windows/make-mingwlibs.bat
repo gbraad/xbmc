@@ -13,7 +13,7 @@ SET build32=yes
 SET build64=no
 SET buildArm=no
 SET vcarch=x86
-SET msys2=msys64
+SET msys2=msys32
 SET win10=no
 SET UWPSDKVer=
 
