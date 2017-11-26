@@ -76,14 +76,20 @@ void CRPRenderManager::Deinitialize()
 
 bool CRPRenderManager::Configure(AVPixelFormat format, unsigned int width, unsigned int height, unsigned int orientation)
 {
-  m_format = format;
-  m_width = width;
-  m_height = height;
-  m_orientation = orientation;
+  if (m_format != format ||
+      m_width != width ||
+      m_height != height ||
+      m_orientation != orientation)
+  {
+    m_format = format;
+    m_width = width;
+    m_height = height;
+    m_orientation = orientation;
 
-  CSingleLock lock(m_stateMutex);
+    CSingleLock lock(m_stateMutex);
 
-  m_state = RENDER_STATE::CONFIGURING;
+    m_state = RENDER_STATE::CONFIGURING;
+  }
 
   return true;
 }

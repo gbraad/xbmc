@@ -75,19 +75,24 @@ IRenderBuffer *CBaseRenderBufferPool::GetBuffer(size_t size)
   if (!m_bConfigured)
     return nullptr;
 
+  CSingleLock lock(m_bufferMutex);
+
   // If frame size is unknown, set it now
   if (m_frameSize == 0)
     m_frameSize = size;
 
-  // Changing sizes is not implemented
+  // Handle changing sizes
   if (m_frameSize != size)
-    return nullptr;
+  {
+    Flush();
+    m_frameSize = size;
+  }
 
   IRenderBuffer *renderBuffer = nullptr;
 
   void *header = nullptr;
 
-  if (GetHeaderWithTimeout(header))
+  if (GetHeaderWithTimeout(header, m_bufferMutex))
   {
     CSingleLock lock(m_bufferMutex);
 
@@ -116,20 +121,21 @@ IRenderBuffer *CBaseRenderBufferPool::GetBuffer(size_t size)
 
 void CBaseRenderBufferPool::Return(IRenderBuffer *buffer)
 {
-  CSingleLock lock(m_bufferMutex);
-
   buffer->SetLoaded(false);
   buffer->SetRendered(false);
 
-  m_free.emplace_back(buffer);
+  std::unique_ptr<IRenderBuffer> bufferPtr(buffer);
+
+  CSingleLock lock(m_bufferMutex);
+
+  // Only reclaim buffers of the same size
+  if (buffer->GetFrameSize() == m_frameSize)
+    m_free.emplace_back(std::move(bufferPtr));
 }
 
 void CBaseRenderBufferPool::Prime(size_t bufferSize)
 {
   CSingleLock lock(m_bufferMutex);
-
-  if (m_frameSize != bufferSize)
-    return;
 
   // Allocate two buffers for double buffering
   unsigned int bufferCount = 2;
@@ -138,7 +144,7 @@ void CBaseRenderBufferPool::Prime(size_t bufferSize)
 
   for (unsigned int i = 0; i < bufferCount; i++)
   {
-    IRenderBuffer *buffer = GetBuffer(0);
+    IRenderBuffer *buffer = GetBuffer(bufferSize);
     if (buffer == nullptr)
       break;
 

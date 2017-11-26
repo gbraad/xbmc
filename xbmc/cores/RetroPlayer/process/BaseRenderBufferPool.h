@@ -56,7 +56,7 @@ namespace RETRO
     virtual IRenderBuffer *CreateRenderBuffer(void *header = nullptr) = 0;
     virtual bool ConfigureInternal() { return true; }
     virtual void *GetHeader(unsigned int timeoutMs = 0) { return nullptr; }
-    virtual bool GetHeaderWithTimeout(void *&header)
+    virtual bool GetHeaderWithTimeout(void *&header, CCriticalSection &lockedMtuex)
     {
       header = nullptr;
       return true;
