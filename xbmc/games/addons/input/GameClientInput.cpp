@@ -156,6 +156,7 @@ void CGameClientInput::UpdatePort(unsigned int port, const ControllerPtr& contro
       game_controller controllerStruct;
 
       controllerStruct.controller_id        = strId.c_str();
+      controllerStruct.model                = ""; //! @todo
       controllerStruct.digital_button_count = controller->FeatureCount(FEATURE_TYPE::SCALAR, INPUT_TYPE::DIGITAL);
       controllerStruct.analog_button_count  = controller->FeatureCount(FEATURE_TYPE::SCALAR, INPUT_TYPE::ANALOG);
       controllerStruct.analog_stick_count   = controller->FeatureCount(FEATURE_TYPE::ANALOG_STICK);
