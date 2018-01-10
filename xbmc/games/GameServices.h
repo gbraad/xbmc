@@ -66,10 +66,13 @@ namespace GAME
 
     RETRO::CGUIGameRenderManager &GameRenderManager() { return m_gameRenderManager; }
 
+    PERIPHERALS::CPeripherals &PeripheralManager() { return m_peripheralManager; }
+
   private:
     // Construction parameters
     CControllerManager &m_controllerManager;
     RETRO::CGUIGameRenderManager &m_gameRenderManager;
+    PERIPHERALS::CPeripherals &m_peripheralManager;
     const CProfilesManager &m_profileManager;
 
     // Game services
