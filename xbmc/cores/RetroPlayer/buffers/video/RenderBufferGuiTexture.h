@@ -19,28 +19,41 @@
  */
 #pragma once
 
-#include "BaseRenderBuffer.h"
+#include "cores/RetroPlayer/buffers/BaseRenderBuffer.h"
+#include "cores/IPlayer.h"
+#include "guilib/Texture.h"
+#include "guilib/TextureFormats.h"
 
-#include <stdint.h>
-#include <vector>
+#include <memory>
 
 namespace KODI
 {
 namespace RETRO
 {
-  class CRenderBufferSysMem : public CBaseRenderBuffer
+  class CRenderBufferGuiTexture : public CBaseRenderBuffer
   {
   public:
-    CRenderBufferSysMem() = default;
-    virtual ~CRenderBufferSysMem() = default;
+    CRenderBufferGuiTexture(ESCALINGMETHOD scalingMethod);
+    virtual ~CRenderBufferGuiTexture() = default;
 
-    // implementation of IRenderBuffer
+    // implementation of IRenderBuffer via CBaseRenderBuffer
     bool Allocate(AVPixelFormat format, unsigned int width, unsigned int height, unsigned int size) override;
     size_t GetFrameSize() const override;
     uint8_t *GetMemory() override;
+    bool UploadTexture() override;
+    void BindToUnit(unsigned int unit) override;
+
+    // GUI texture interface
+    CTexture *GetTexture() { return m_texture.get(); }
 
   protected:
-    std::vector<uint8_t> m_data;
+    AVPixelFormat TranslateFormat(unsigned int textureFormat);
+    TEXTURE_SCALING TranslateScalingMethod(ESCALINGMETHOD scalingMethod);
+
+    // Texture parameters
+    ESCALINGMETHOD m_scalingMethod;
+    unsigned int m_textureFormat = XB_FMT_UNKNOWN;
+    std::unique_ptr<CTexture> m_texture;
   };
 
 }
