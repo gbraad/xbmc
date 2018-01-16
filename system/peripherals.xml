@@ -53,6 +53,8 @@
   <peripheral class="joystick" mapTo="joystick">
     <setting key="left_stick_deadzone" type="float" label="35078" order="1" value="0.2" min="0.0" step="0.05" max="1.0" />
     <setting key="right_stick_deadzone" type="float" label="35079" order="2" value="0.2" min="0.0" step="0.05" max="1.0" />
+    <setting key="left_trigger_deadzone" type="float" label="35080" order="3" value="0.0" min="0.0" step="0.05" max="1.0" />
+    <setting key="right_trigger_deadzone" type="float" label="35081" order="4" value="0.0" min="0.0" step="0.05" max="1.0" />
   </peripheral>
 
 </peripherals>

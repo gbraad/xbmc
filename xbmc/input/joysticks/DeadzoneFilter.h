@@ -58,10 +58,12 @@ namespace JOYSTICK
     /*!
      * \brief Apply deadzone filtering to an axis
      * \param axisIndex The axis index
+     * \param center The axis center
+     * \param range The axis range
      * \param axisValue The axis value
      * \return The value after applying deadzone filtering
      */
-    float FilterAxis(unsigned int axisIndex, float axisValue);
+    float FilterAxis(unsigned int axisIndex, int center, unsigned int range, float axisValue);
 
   private:
     /*!
@@ -75,12 +77,25 @@ namespace JOYSTICK
     bool GetDeadzone(unsigned int axisIndex, float& result, const char* featureName, const char* settingName);
 
     /*!
+     * \brief Get the deadzone value from the peripheral's settings
+     * \param axisIndex The axis index
+     * \param center The axis center
+     * \param range The axis range
+     * \param[out] result The deadzone value
+     * \param featureName The feature that axisIndex is mapped to
+     * \param settingName The setting corresponding to the given feature
+     * \return True if the feature is an analog stick and the peripheral has the setting
+     */
+    bool GetTriggerDeadzone(unsigned int axisIndex, int center, unsigned int range,float& result, const char* featureName, const char* settingName);
+
+    /*!
      * \brief Utility function to calculate the deadzone
      * \param value The value
+     * \param center The axis center
      * \param deadzone The deadzone
      * \return The scaled deadzone
      */
-    static float ApplyDeadzone(float value, float deadzone);
+    static float ApplyDeadzone(float value, int center, float deadzone);
 
     // Construction parameters
     IButtonMap* const               m_buttonMap;

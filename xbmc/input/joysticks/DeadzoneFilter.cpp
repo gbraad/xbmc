@@ -37,6 +37,10 @@ using namespace JOYSTICK;
 #define SETTING_LEFT_STICK_DEADZONE   "left_stick_deadzone"
 #define SETTING_RIGHT_STICK_DEADZONE  "right_stick_deadzone"
 
+// Settings for triggers
+#define SETTING_LEFT_TRIGGER_DEADZONE   "left_trigger_deadzone"
+#define SETTING_RIGHT_TRIGGER_DEADZONE  "right_trigger_deadzone"
+
 CDeadzoneFilter::CDeadzoneFilter(IButtonMap* buttonMap, PERIPHERALS::CPeripheral* peripheral) :
   m_buttonMap(buttonMap),
   m_peripheral(peripheral)
@@ -45,15 +49,32 @@ CDeadzoneFilter::CDeadzoneFilter(IButtonMap* buttonMap, PERIPHERALS::CPeripheral
     CLog::Log(LOGERROR, "ERROR: Must use default controller profile instead of %s", m_buttonMap->ControllerID().c_str());
 }
 
-float CDeadzoneFilter::FilterAxis(unsigned int axisIndex, float axisValue)
+float CDeadzoneFilter::FilterAxis(unsigned int axisIndex, int center, unsigned int range, float axisValue)
 {
   float deadzone = 0.0f;
 
-  bool bSuccess = GetDeadzone(axisIndex, deadzone, DEFAULT_LEFT_STICK_NAME, SETTING_LEFT_STICK_DEADZONE) ||
-                  GetDeadzone(axisIndex, deadzone, DEFAULT_RIGHT_STICK_NAME, SETTING_RIGHT_STICK_DEADZONE);
+  bool bSuccess = false;
+
+  if (center == 0)
+  {
+    if (GetDeadzone(axisIndex, deadzone, DEFAULT_LEFT_STICK_NAME, SETTING_LEFT_STICK_DEADZONE) ||
+        GetDeadzone(axisIndex, deadzone, DEFAULT_RIGHT_STICK_NAME, SETTING_RIGHT_STICK_DEADZONE))
+    {
+      bSuccess = true;
+    }
+  }
+
+  if (!bSuccess)
+  {
+    if (GetTriggerDeadzone(axisIndex, center, range, deadzone, DEFAULT_LEFT_TRIGGER_NAME, SETTING_LEFT_TRIGGER_DEADZONE) ||
+        GetTriggerDeadzone(axisIndex, center, range, deadzone, DEFAULT_RIGHT_TRIGGER_NAME, SETTING_RIGHT_TRIGGER_DEADZONE))
+    {
+      bSuccess = true;
+    }
+  }
 
   if (bSuccess)
-    return ApplyDeadzone(axisValue, deadzone);
+    return ApplyDeadzone(axisValue, center, deadzone);
 
   // Always filter noise about the center
   if (std::abs(axisValue) < AXIS_EPSILON)
@@ -87,8 +108,39 @@ bool CDeadzoneFilter::GetDeadzone(unsigned int axisIndex, float& deadzone, const
   return false;
 }
 
-float CDeadzoneFilter::ApplyDeadzone(float value, float deadzone)
+bool CDeadzoneFilter::GetTriggerDeadzone(unsigned int axisIndex, int center, unsigned int range, float& deadzone, const char* featureName, const char* settingName)
 {
+  std::vector<SEMIAXIS_DIRECTION> dirs = {
+    SEMIAXIS_DIRECTION::POSITIVE,
+    SEMIAXIS_DIRECTION::NEGATIVE,
+  };
+
+  CDriverPrimitive primitive;
+  for (auto dir : dirs)
+  {
+    if (center > 0 && dir != SEMIAXIS_DIRECTION::NEGATIVE)
+      continue;
+
+    if (center < 0 && dir != SEMIAXIS_DIRECTION::POSITIVE)
+      continue;
+
+    if (m_buttonMap->GetScalar(featureName, primitive))
+    {
+      if (primitive.Type() == PRIMITIVE_TYPE::SEMIAXIS && primitive.Index() == axisIndex)
+      {
+        deadzone = m_peripheral->GetSettingFloat(settingName);
+        return true;
+      }
+    }
+}
+
+  return false;
+}
+
+float CDeadzoneFilter::ApplyDeadzone(float value, int center, float deadzone)
+{
+  //! @todo Include center in calculation
+
   if (deadzone < 0.0f || deadzone >= 1.0f)
     return 0.0f;
 

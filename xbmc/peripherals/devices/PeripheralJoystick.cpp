@@ -285,8 +285,8 @@ bool CPeripheralJoystick::OnAxisMotion(unsigned int axisIndex, float position)
     m_buttonMap->GetAxisProperties(axisIndex, center, range);
 
   // Apply deadzone filtering
-  if (center == 0 && m_deadzoneFilter)
-    position = m_deadzoneFilter->FilterAxis(axisIndex, position);
+  if (m_deadzoneFilter)
+    position = m_deadzoneFilter->FilterAxis(axisIndex, center, range, position);
 
   // Avoid sending activated input if the app is in the background
   if (position != static_cast<float>(center) && !g_application.IsAppFocused())

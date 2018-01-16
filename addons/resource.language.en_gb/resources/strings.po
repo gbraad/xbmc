@@ -17140,19 +17140,31 @@ msgctxt "#35077"
 msgid "Analog sticks"
 msgstr ""
 
-#. Setting title for left analog stick deadzone
+#. Setting title for left analog stick deadzone on a game controller
 #: system/peripherals.xml
 msgctxt "#35078"
 msgid "Left stick deadzone"
 msgstr ""
 
-#. Setting title for right analog stick deadzone
+#. Setting title for right analog stick deadzone on a game controller
 #: system/peripherals.xml
 msgctxt "#35079"
 msgid "Right stick deadzone"
 msgstr ""
 
-#empty strings from id 35080 to 35087
+#. Setting title for left trigger deadzone on a game controller
+#: system/peripherals.xml
+msgctxt "#35080"
+msgid "Left trigger deadzone"
+msgstr ""
+
+#. Setting title for right analog stick deadzone on a game controller
+#: system/peripherals.xml
+msgctxt "#35081"
+msgid "Right trigger deadzone"
+msgstr ""
+
+#empty strings from id 35082 to 35087
 
 #. Name of the setting that enables/disables powering off controllers on exit
 #: system/settings/settings.xml
