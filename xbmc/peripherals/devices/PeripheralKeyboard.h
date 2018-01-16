@@ -23,6 +23,8 @@
 #include "input/keyboard/interfaces/IKeyboardDriverHandler.h"
 #include "threads/CriticalSection.h"
 
+#include <vector>
+
 namespace PERIPHERALS
 {
   class CPeripheralKeyboard : public CPeripheral,
