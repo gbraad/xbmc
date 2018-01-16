@@ -81,13 +81,11 @@ bool CGameClientKeyboard::OnKeyPress(const KEYBOARD::KeyName &key, KEYBOARD::Mod
 
   bool bHandled = false;
 
-  const std::string controllerId = ControllerID();
-
   game_input_event event;
 
   event.type            = GAME_INPUT_EVENT_KEY;
   event.port            = 0; //! @todo Remove in port refactor
-  event.controller_id   = controllerId.c_str();
+  event.controller_id   = m_controllerId.c_str();
   event.feature_name    = key.c_str();
   event.key.pressed     = true;
   event.key.unicode     = unicode;
@@ -107,13 +105,11 @@ bool CGameClientKeyboard::OnKeyPress(const KEYBOARD::KeyName &key, KEYBOARD::Mod
 
 void CGameClientKeyboard::OnKeyRelease(const KEYBOARD::KeyName &key, KEYBOARD::Modifier mod, uint32_t unicode)
 {
-  const std::string controllerId = ControllerID();
-
   game_input_event event;
 
   event.type            = GAME_INPUT_EVENT_KEY;
   event.port            = 0; //! @todo Remove in port refactor
-  event.controller_id   = controllerId.c_str();
+  event.controller_id   = m_controllerId.c_str();
   event.feature_name    = key.c_str();
   event.key.pressed     = false;
   event.key.unicode     = unicode;

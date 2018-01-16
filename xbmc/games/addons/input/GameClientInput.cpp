@@ -211,13 +211,16 @@ void CGameClientInput::OpenKeyboard()
   {
     CSingleLock lock(m_clientAccess);
 
-    try
+    if (m_gameClient.Initialized())
     {
-      bSuccess = m_struct.toAddon.EnableKeyboard(true, &controllerStruct);
-    }
-    catch (...)
-    {
-      m_gameClient.LogException("EnableKeyboard()");
+      try
+      {
+        bSuccess = m_struct.toAddon.EnableKeyboard(true, &controllerStruct);
+      }
+      catch (...)
+      {
+        m_gameClient.LogException("EnableKeyboard()");
+      }
     }
   }
 
@@ -228,6 +231,22 @@ void CGameClientInput::OpenKeyboard()
 void CGameClientInput::CloseKeyboard()
 {
   m_keyboard.reset();
+
+  {
+    CSingleLock lock(m_clientAccess);
+
+    if (m_gameClient.Initialized())
+    {
+      try
+      {
+        m_struct.toAddon.EnableKeyboard(false, nullptr);
+      }
+      catch (...)
+      {
+        m_gameClient.LogException("EnableKeyboard()");
+      }
+    }
+  }
 }
 
 void CGameClientInput::OpenMouse()
