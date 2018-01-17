@@ -20,6 +20,7 @@ xbmc/favourites                                 favourites
 xbmc/guiinfo                                    guiinfo
 xbmc/guilib                                     guilib
 xbmc/input                                      input
+xbmc/input/actions/generic                      input/actions/generic
 xbmc/input/joysticks                            input/joysticks
 xbmc/input/joysticks/dialogs                    input/joysticks/dialogs
 xbmc/input/joysticks/generic                    input/joysticks/generic

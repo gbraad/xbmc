@@ -26,7 +26,8 @@ set(SOURCES Action.cpp
             WindowTranslator.cpp
             XBMC_keytable.cpp)
 
-set(HEADERS hardware/IHardwareInput.h
+set(HEADERS actions/interfaces/IActionHandler.h
+            hardware/IHardwareInput.h
             mouse/interfaces/IMouseButtonMap.h
             mouse/interfaces/IMouseDriverHandler.h
             mouse/interfaces/IMouseInputHandler.h
