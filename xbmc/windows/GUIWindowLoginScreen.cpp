@@ -115,7 +115,7 @@ bool CGUIWindowLoginScreen::OnMessage(CGUIMessage& message)
           if (bOkay)
           {
             if (iItem >= 0)
-              LoadProfile((unsigned int)iItem);
+              CApplicationMessenger::GetInstance().PostMsg(TMSG_LOADPROFILE, static_cast<unsigned int>(iItem));
           }
           else
           {

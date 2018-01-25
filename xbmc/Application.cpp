@@ -2564,8 +2564,11 @@ void CApplication::OnApplicationMessage(ThreadMessage* pMsg)
   break;
 
   case TMSG_LOADPROFILE:
-    CGUIWindowLoginScreen::LoadProfile(pMsg->param1);
+  {
+    const unsigned int profile = pMsg->param1;
+    LoadProfile(profile);
     break;
+  }
 
   default:
     CLog::Log(LOGERROR, "%s: Unhandled threadmessage sent, %u", __FUNCTION__, msg);
