@@ -41,10 +41,10 @@ namespace GAME
      */
     explicit CGameClientHardware(CGameClient &gameClient);
 
-    virtual ~CGameClientHardware() = default;
+    ~CGameClientHardware() override = default;
 
     // Implementation of IHardwareInput
-    virtual void OnResetButton(const std::string &portAddress) override;
+    void OnResetButton() override;
 
   private:
     // Construction parameter

@@ -474,7 +474,7 @@ void CGameClient::ResetPlayback()
   m_playback.reset(new CGameClientRealtimePlayback);
 }
 
-void CGameClient::Reset(const std::string &portAddress)
+void CGameClient::Reset()
 {
   ResetPlayback();
 

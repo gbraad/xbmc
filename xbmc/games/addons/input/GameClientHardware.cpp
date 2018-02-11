@@ -30,8 +30,8 @@ CGameClientHardware::CGameClientHardware(CGameClient &gameClient) :
 {
 }
 
-void CGameClientHardware::OnResetButton(const std::string &portAddress)
+void CGameClientHardware::OnResetButton()
 {
-  CLog::Log(LOGDEBUG, "%s: Port %s sending hardware reset", m_gameClient.ID().c_str(), portAddress.c_str());
-  m_gameClient.Reset(portAddress);
+  CLog::Log(LOGDEBUG, "%s: Sending hardware reset", m_gameClient.ID().c_str());
+  m_gameClient.Reset();
 }

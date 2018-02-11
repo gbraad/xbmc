@@ -36,13 +36,8 @@ namespace HARDWARE
     
     /*!
      * \brief A hardware reset button has been pressed
-     *
-     * \param portAddress The port belonging to the user who pressed the reset
-     *                    button, or "1" (the default port) if unknown
-     *
-     * @todo Change defaulting mechanism
      */
-    virtual void OnResetButton(const std::string &portAddress) = 0;
+    virtual void OnResetButton() = 0;
   };
 }
 }

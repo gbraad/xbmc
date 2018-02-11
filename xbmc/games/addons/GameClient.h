@@ -86,7 +86,7 @@ public:
   void Unload();
   bool OpenFile(const CFileItem& file, IGameAudioCallback* audio, IGameVideoCallback* video, IGameInputCallback *input);
   bool OpenStandalone(IGameAudioCallback* audio, IGameVideoCallback* video, IGameInputCallback *input);
-  void Reset(const std::string &portAddress);
+  void Reset();
   void CloseFile();
   const std::string& GetGamePath() const { return m_gamePath; }
 

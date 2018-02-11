@@ -61,15 +61,26 @@ namespace GAME
 
     // Input functions
     bool AcceptsInput() const;
+
+    // Topology functions
     const CControllerTree &GetControllerTree() const { return m_controllers; }
     bool SupportsKeyboard() const;
     bool SupportsMouse() const;
+
+    // Keyboard functions
     bool OpenKeyboard(const ControllerPtr &controller);
     void CloseKeyboard();
+
+    // Mouse functions
     bool OpenMouse(const ControllerPtr &controller);
     void CloseMouse();
+
+    // Joystick functions
     bool OpenJoystick(const std::string &portAddress, const ControllerPtr &controller);
     void CloseJoystick(const std::string &portAddress);
+
+    // Hardware input functions
+    void HardwareReset();
 
     // Input callbacks
     bool ReceiveInputEvent(const game_input_event& eventStruct);

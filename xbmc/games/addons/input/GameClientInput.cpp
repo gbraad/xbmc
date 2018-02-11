@@ -425,6 +425,12 @@ void CGameClientInput::CloseJoystick(const std::string &portAddress)
   }
 }
 
+void CGameClientInput::HardwareReset()
+{
+  if (m_hardware)
+    m_hardware->OnResetButton();
+}
+
 bool CGameClientInput::ReceiveInputEvent(const game_input_event& event)
 {
   bool bHandled = false;
