@@ -24,6 +24,7 @@
 #include "IGUIRenderSettings.h"
 #include "RenderContext.h"
 #include "RenderSettings.h"
+#include "RenderTranslator.h"
 #include "cores/RetroPlayer/process/IRenderBuffer.h"
 #include "cores/RetroPlayer/process/IRenderBufferPool.h"
 #include "cores/RetroPlayer/process/RenderBufferManager.h"
@@ -54,10 +55,13 @@ CRPRenderManager::CRPRenderManager(CRPProcessInfo &processInfo) :
 
 void CRPRenderManager::Initialize()
 {
+  CLog::Log(LOGDEBUG, "RetroPlayer[RENDER]: Initializing render manager");
 }
 
 void CRPRenderManager::Deinitialize()
 {
+  CLog::Log(LOGDEBUG, "RetroPlayer[RENDER]: Deinitializing render manager");
+
   for (auto &pixelScaler : m_scalers)
   {
     if (pixelScaler.second != nullptr)
@@ -80,6 +84,12 @@ bool CRPRenderManager::Configure(AVPixelFormat format, unsigned int width, unsig
   m_width = width;
   m_height = height;
   m_orientation = orientation;
+
+  CLog::Log(LOGINFO, "RetroPlayer[RENDER]: Configuring format %s, %ux%u, %u deg",
+            CRenderTranslator::TranslatePixelFormat(format),
+            width,
+            height,
+            orientation);
 
   CSingleLock lock(m_stateMutex);
 
@@ -158,6 +168,8 @@ void CRPRenderManager::FrameMove()
     {
       MESSAGING::CApplicationMessenger::GetInstance().PostMsg(TMSG_SWITCHTOFULLSCREEN);
       m_state = RENDER_STATE::CONFIGURED;
+
+      CLog::Log(LOGINFO, "RetroPlayer[RENDER]: Renderer configured");
     }
 
     if (m_state == RENDER_STATE::CONFIGURED)
