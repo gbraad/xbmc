@@ -246,3 +246,8 @@ void CWinSystemGbm::Unregister(IDispResource *resource)
     m_resources.erase(i);
   }
 }
+
+gbm_device *CWinSystemGbm::GetGBMDevice()
+{
+  return m_GBM->m_device;
+}

@@ -58,11 +58,12 @@ public:
   virtual void Register(IDispResource *resource);
   virtual void Unregister(IDispResource *resource);
 
-  std::shared_ptr<CDRMUtils> m_DRM;
+  gbm_device *GetGBMDevice();
 
-protected:
+  std::shared_ptr<CDRMUtils> m_DRM;
   std::unique_ptr<CGBMUtils> m_GBM;
 
+protected:
   EGLDisplay m_nativeDisplay;
   EGLNativeWindowType m_nativeWindow;
 
