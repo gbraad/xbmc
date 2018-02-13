@@ -60,6 +60,12 @@ void _VerifyGLState(const char* szfile, const char* szfunction, int lineno){
   CLog::Log(LOGDEBUG, "Modelview Matrix:");
   printMatrix(matrix);
 //  abort();
+#elif defined(HAS_GLES)
+  GLenum err = glGetError();
+  if (err==GL_NO_ERROR)
+    return;
+  if (szfile && szfunction)
+    CLog::Log(LOGERROR, "In file:%s function:%s line:%d", szfile, szfunction, lineno);
 #endif
 }
 
