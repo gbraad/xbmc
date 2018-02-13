@@ -72,7 +72,7 @@ void CRetroPlayerVideo::AddData(const uint8_t* data, unsigned int size)
 
 void CRetroPlayerVideo::CloseStream()
 {
-  CLog::Log(LOGDEBUG, "RetroPlayer[VIDEO]: Closing stream");
+  CLog::Log(LOGDEBUG, "RetroPlayer[VIDEO]: Closing video stream");
 
   m_renderManager.Flush();
 }

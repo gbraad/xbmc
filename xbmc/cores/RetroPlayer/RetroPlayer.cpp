@@ -194,6 +194,7 @@ bool CRetroPlayer::OpenFile(const CFileItem& file, const CPlayerOptions& options
   else
   {
     m_gameClient.reset();
+    m_input.reset();
     m_audio.reset();
     m_video.reset();
   }
@@ -224,11 +225,14 @@ bool CRetroPlayer::CloseFile(bool reopen /* = false */)
     m_callback.OnPlayBackEnded();
   }
 
+  m_input.reset();
   m_audio.reset();
   m_video.reset();
 
   m_renderManager.reset();
   m_processInfo.reset();
+
+  CLog::Log(LOGDEBUG, "RetroPlayer[PLAYER]: Playback ended");
 
   return true;
 }
@@ -399,6 +403,7 @@ bool CRetroPlayer::OnAction(const CAction &action)
 
       m_gameClient->GetPlayback()->SetSpeed(0.0);
 
+      CLog::Log(LOGDEBUG, "RetroPlayer[PLAYER]: Sending reset command");
       m_gameClient->Input().HardwareReset();
 
       // If rewinding or paused, begin playback
@@ -413,6 +418,7 @@ bool CRetroPlayer::OnAction(const CAction &action)
   {
     if (m_gameClient && m_gameClient->GetPlayback()->GetSpeed() == 0.0)
     {
+      CLog::Log(LOGDEBUG, "RetroPlayer[PLAYER]: Closing OSD via ACTION_SHOW_OSD");
       CloseOSD();
       return true;
     }
@@ -550,7 +556,10 @@ void CRetroPlayer::OnSpeedChange(double newSpeed)
   m_renderManager->SetSpeed(newSpeed);
   m_processInfo->SetSpeed(static_cast<float>(newSpeed));
   if (newSpeed != 0.0)
+  {
+    CLog::Log(LOGDEBUG, "RetroPlayer[PLAYER]: Closing OSD via speed change (%f)", newSpeed);
     CloseOSD();
+  }
 }
 
 void CRetroPlayer::CloseOSD()

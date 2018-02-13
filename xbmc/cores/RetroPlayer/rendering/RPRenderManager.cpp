@@ -169,7 +169,7 @@ void CRPRenderManager::FrameMove()
       MESSAGING::CApplicationMessenger::GetInstance().PostMsg(TMSG_SWITCHTOFULLSCREEN);
       m_state = RENDER_STATE::CONFIGURED;
 
-      CLog::Log(LOGINFO, "RetroPlayer[RENDER]: Renderer configured");
+      CLog::Log(LOGINFO, "RetroPlayer[RENDER]: Renderer configured on first frame");
     }
 
     if (m_state == RENDER_STATE::CONFIGURED)
@@ -370,6 +370,9 @@ std::shared_ptr<CRPBaseRenderer> CRPRenderManager::GetRenderer(IRenderBufferPool
   // If buffer pool has no compatible renderers, create one now
   if (!renderer)
   {
+    CLog::Log(LOGERROR, "RetroPlayer[RENDER]: Creating renderer for %s",
+              m_processInfo.GetRenderSystemName(bufferPool).c_str());
+
     renderer.reset(m_processInfo.CreateRenderer(bufferPool, renderSettings));
     if (renderer && renderer->Configure(m_format, m_width, m_height, m_orientation))
     {
@@ -433,6 +436,8 @@ void CRPRenderManager::CreateRenderBuffer(IRenderBufferPool *bufferPool)
     std::vector<uint8_t> cachedFrame = std::move(m_cachedFrame);
     if (!cachedFrame.empty())
     {
+      CLog::Log(LOGERROR, "RetroPlayer[RENDER]: Creating render buffer for renderer");
+
       IRenderBuffer *renderBuffer = bufferPool->GetBuffer(cachedFrame.size());
       if (renderBuffer != nullptr)
       {
@@ -443,6 +448,10 @@ void CRPRenderManager::CreateRenderBuffer(IRenderBufferPool *bufferPool)
         m_renderBuffers.emplace_back(renderBuffer);
       }
       m_cachedFrame = std::move(cachedFrame);
+    }
+    else
+    {
+      CLog::Log(LOGERROR, "RetroPlayer[RENDER]: Failed to create render buffer, no cached frame");
     }
   }
 }

@@ -107,7 +107,7 @@ bool CRetroPlayerAudio::OpenPCMStream(AEDataFormat format, unsigned int samplera
 
 bool CRetroPlayerAudio::OpenEncodedStream(AVCodecID codec, unsigned int samplerate, const CAEChannelInfo& channelLayout)
 {
-  CLog::Log(LOGERROR, "RetroPlayer[AUDIO]: Encoded stream not supported");
+  CLog::Log(LOGERROR, "RetroPlayer[AUDIO]: Encoded audio stream not supported");
 
   return true; //! @todo
 }
@@ -128,7 +128,7 @@ void CRetroPlayerAudio::CloseStream()
 {
   if (m_pAudioStream)
   {
-    CLog::Log(LOGDEBUG, "RetroPlayer[AUDIO]: Closing stream");
+    CLog::Log(LOGDEBUG, "RetroPlayer[AUDIO]: Closing audio stream");
 
     CServiceBroker::GetActiveAE().FreeStream(m_pAudioStream);
     m_pAudioStream = nullptr;
