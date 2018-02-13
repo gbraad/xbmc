@@ -11,6 +11,11 @@ endif()
 if(OPENGL_FOUND OR OPENGLES_FOUND)
   list(APPEND SOURCES RPRendererOpenGLES.cpp)
   list(APPEND HEADERS RPRendererOpenGLES.h)
+
+  if(OPENGLES_FOUND AND CORE_PLATFORM_NAME_LC STREQUAL gbm)
+    list(APPEND SOURCES RPRendererOpenGLESPRIME.cpp)
+    list(APPEND HEADERS RPRendererOpenGLESPRIME.h)
+  endif()
 endif()
 
 if(OPENGL_FOUND)
