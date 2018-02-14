@@ -21,9 +21,6 @@
 #include "RenderBufferGbm.h"
 #include "ServiceBroker.h"
 
-#include <EGL/egl.h>
-#include <EGL/eglext.h>
-
 using namespace KODI;
 using namespace RETRO;
 
@@ -35,6 +32,8 @@ CRenderBufferGbm::CRenderBufferGbm(CRenderContext &context,
   m_bpp(bpp)
 {
   m_winSystem = dynamic_cast<CWinSystemGbmGLESContext*>(&CServiceBroker::GetWinSystem());
+
+  m_EGL.reset(new CEGL(m_winSystem->GetEGLDisplay()));
 }
 
 CRenderBufferGbm::~CRenderBufferGbm()
@@ -86,26 +85,10 @@ bool CRenderBufferGbm::UploadTexture()
 
   glBindTexture(m_textureTarget, m_textureId);
 
-  const EGLint attr[] =
-  {
-    EGL_WIDTH, (EGLint)m_width,
-    EGL_HEIGHT, (EGLint)m_height,
-    EGL_LINUX_DRM_FOURCC_EXT, m_fourcc,
-    EGL_DMA_BUF_PLANE0_FD_EXT, m_fd,
-    EGL_DMA_BUF_PLANE0_OFFSET_EXT, 0,
-    EGL_DMA_BUF_PLANE0_PITCH_EXT, (EGLint)m_stride,
-    EGL_NONE
-  };
-
-  PFNEGLCREATEIMAGEKHRPROC eglCreateImageKHR = (PFNEGLCREATEIMAGEKHRPROC)eglGetProcAddress("eglCreateImageKHR");
-  PFNEGLDESTROYIMAGEKHRPROC eglDestroyImageKHR = (PFNEGLDESTROYIMAGEKHRPROC)eglGetProcAddress("eglDestroyImageKHR");
-  PFNGLEGLIMAGETARGETTEXTURE2DOESPROC glEGLImageTargetTexture2DOES = (PFNGLEGLIMAGETARGETTEXTURE2DOESPROC)eglGetProcAddress("glEGLImageTargetTexture2DOES");
-
-  auto img = eglCreateImageKHR(m_winSystem->GetEGLDisplay(), EGL_NO_CONTEXT, EGL_LINUX_DMA_BUF_EXT, nullptr, attr);
-
-  glEGLImageTargetTexture2DOES(m_textureTarget, img);
-
-  eglDestroyImageKHR(m_winSystem->GetEGLDisplay(), img);
+  m_EGL->Configure(m_fd, m_fourcc, m_width, m_height, 0, m_stride);
+  m_EGL->CreateImage();
+  m_EGL->UploadTexture(m_textureTarget);
+  m_EGL->DestroyImage();
 
   glBindTexture(m_textureTarget, 0);
 

@@ -20,6 +20,7 @@
 
 #pragma once
 
+#include "EGL.h"
 #include "cores/RetroPlayer/process/RenderBufferSysMem.h"
 #include "windowing/gbm/WinSystemGbmGLESContext.h"
 
@@ -66,6 +67,7 @@ namespace RETRO
     void CreateTexture();
     void DeleteTexture();
 
+    std::unique_ptr<CEGL> m_EGL;
     int m_fd = -1;
     uint32_t m_stride = 0;
     struct gbm_bo *m_bo = nullptr;
