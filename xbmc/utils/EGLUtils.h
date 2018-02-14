@@ -22,8 +22,12 @@
 #include <set>
 #include <string>
 #include <stdexcept>
+#include <vector>
 
 #include <EGL/egl.h>
+#include <EGL/eglext.h>
+
+#include "system_gl.h"
 
 #include "StringUtils.h"
 
@@ -45,4 +49,60 @@ public:
 
 private:
   CEGLUtils();
+};
+
+/* --- CEGLImage ---------------------------------------------*/
+
+#define MAX_NUM_PLANES 3
+
+static const EGLint egl_dmabuf_plane_fd_attr[MAX_NUM_PLANES] =
+{
+  EGL_DMA_BUF_PLANE0_FD_EXT,
+  EGL_DMA_BUF_PLANE1_FD_EXT,
+  EGL_DMA_BUF_PLANE2_FD_EXT,
+};
+
+static const EGLint egl_dmabuf_plane_offset_attr[MAX_NUM_PLANES] =
+{
+  EGL_DMA_BUF_PLANE0_OFFSET_EXT,
+  EGL_DMA_BUF_PLANE1_OFFSET_EXT,
+  EGL_DMA_BUF_PLANE2_OFFSET_EXT,
+};
+
+static const EGLint egl_dmabuf_plane_pitch_attr[MAX_NUM_PLANES] =
+{
+  EGL_DMA_BUF_PLANE0_PITCH_EXT,
+  EGL_DMA_BUF_PLANE1_PITCH_EXT,
+  EGL_DMA_BUF_PLANE2_PITCH_EXT,
+};
+
+struct eglAttrs
+{
+  int width;
+  int height;
+  int fourcc;
+  int num_planes;
+  int fd[MAX_NUM_PLANES];
+  int offset[MAX_NUM_PLANES];
+  int stride[MAX_NUM_PLANES];
+};
+
+class CEGLImage
+{
+public:
+  CEGLImage(EGLDisplay display);
+  ~CEGLImage() = default;
+
+  //void Configure(int fd, int fourcc, int width, int height, int offset, int stride);
+  bool CreateImage(eglAttrs imageAttrs);
+  void UploadImage(GLenum textureTarget);
+  void DestroyImage();
+
+private:
+  EGLDisplay m_display = nullptr;
+  EGLImage m_image = nullptr;
+
+  PFNEGLCREATEIMAGEKHRPROC eglCreateImageKHR = nullptr;
+  PFNEGLDESTROYIMAGEKHRPROC eglDestroyImageKHR = nullptr;
+  PFNGLEGLIMAGETARGETTEXTURE2DOESPROC glEGLImageTargetTexture2DOES = nullptr;
 };
