@@ -18,6 +18,11 @@
  *
  */
 
+#ifdef HAVE_GBM
+#include "cores/RetroPlayer/process/gbm/RenderBufferGbm.h"
+#include "cores/RetroPlayer/process/gbm/RenderBufferPoolGbm.h"
+#endif
+
 #include "RPRendererOpenGLES.h"
 #include "cores/RetroPlayer/rendering/RenderContext.h"
 #include "cores/RetroPlayer/rendering/RenderVideoSettings.h"
@@ -43,7 +48,12 @@ CRPBaseRenderer *CRendererFactoryOpenGLES::CreateRenderer(const CRenderSettings 
 
 RenderBufferPoolVector CRendererFactoryOpenGLES::CreateBufferPools(CRenderContext &context)
 {
-  return { std::make_shared<CRenderBufferPoolOpenGLES>(context) };
+  return {
+#ifdef HAVE_GBM
+           std::make_shared<CRenderBufferPoolGbm>(context),
+#endif
+           std::make_shared<CRenderBufferPoolOpenGLES>(context),
+         };
 }
 
 // --- CRenderBufferOpenGLES ---------------------------------------------------
@@ -415,7 +425,14 @@ void CRPRendererOpenGLES::DrawBlackBars()
 
 void CRPRendererOpenGLES::Render(uint8_t alpha)
 {
-  CRenderBufferOpenGLES *renderBuffer = static_cast<CRenderBufferOpenGLES*>(m_renderBuffer);
+  // CBaseRenderBuffer *renderBuffer = nullptr;
+
+#ifdef HAVE_GBM
+  CRenderBufferGbm *renderBuffer = static_cast<CRenderBufferGbm*>(m_renderBuffer);
+#endif
+
+  // if (!renderBuffer)
+    // renderBuffer = static_cast<CRenderBufferOpenGLES*>(m_renderBuffer);
 
   if (renderBuffer == nullptr)
     return;
