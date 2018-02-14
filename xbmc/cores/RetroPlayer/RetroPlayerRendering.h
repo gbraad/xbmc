@@ -21,9 +21,9 @@
 
 #include "games/addons/GameClientCallbacks.h"
 
-#include <memory>
+#include "system_gl.h"
 
-class CPixelConverter;
+#include <EGL/egl.h>
 
 namespace KODI
 {
@@ -32,31 +32,26 @@ namespace RETRO
   class CRPProcessInfo;
   class CRPRenderManager;
 
-  /*!
-   * \brief Renders video frames provided by the game loop
-   *
-   * \sa CRPRenderManager
-   */
-  class CRetroPlayerVideo : public GAME::IGameVideoCallback
+  class CRetroPlayerRendering : public GAME::IGameRenderingCallback
   {
   public:
-    CRetroPlayerVideo(CRPRenderManager& m_renderManager, CRPProcessInfo& m_processInfo);
+    CRetroPlayerRendering(CRPRenderManager& m_renderManager, CRPProcessInfo& m_processInfo);
 
-    ~CRetroPlayerVideo() override;
+    ~CRetroPlayerRendering() override = default;
 
-    // implementation of IGameVideoCallback
-    bool OpenPixelStream(AVPixelFormat pixfmt, unsigned int width, unsigned int height, unsigned int orientationDeg) override;
-    bool OpenEncodedStream(AVCodecID codec) override;
-    void AddData(const uint8_t* data, unsigned int size) override;
-    void CloseStream() override;
-
-    GAME::IGameRenderingCallback* HardwareRendering();
+    // implementation of IGameRenderingCallback
+    bool Create() override;
+    void Destroy() override;
+    uintptr_t GetCurrentFramebuffer() override;
+    GAME::RetroGLProcAddress GetProcAddress(const char *sym) override { return eglGetProcAddress(sym); }
+    void RenderFrame() override;
 
   private:
     // Construction parameters
     CRPRenderManager& m_renderManager;
     CRPProcessInfo&   m_processInfo;
-    std::shared_ptr<GAME::IGameRenderingCallback> m_hardwareRendering;
+    unsigned int m_width;
+    unsigned int m_height;
   };
 }
 }

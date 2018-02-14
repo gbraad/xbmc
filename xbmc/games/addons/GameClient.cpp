@@ -755,6 +755,39 @@ void CGameClient::LogException(const char* strFunctionName) const
 }
 
 
+void CGameClient::EnableHardwareRendering(const game_hw_info *hw_info)
+{
+  CLog::Log(LOGINFO, "GAME - entered EnableHardwareRendering");
+  //m_video->HardwareRendering()->SetHwInfo(hw_info);
+}
+
+uintptr_t CGameClient::HwGetCurrentFramebuffer()
+{
+  return m_video->HardwareRendering()->GetCurrentFramebuffer();
+}
+
+game_proc_address_t CGameClient::HwGetProcAddress(const char *sym)
+{
+  return m_video->HardwareRendering()->GetProcAddress(sym);
+}
+
+void CGameClient::HwContextReset()
+{
+  try { LogError(m_struct.toAddon.HwContextReset(), "HwContextReset()"); }
+  catch (...) { LogException("HwContextReset()"); }
+}
+
+void CGameClient::CreateHwRenderContext()
+{
+  m_video->HardwareRendering()->Create();
+}
+
+void CGameClient::RenderFrame()
+{
+  m_video->HardwareRendering()->RenderFrame();
+}
+
+
 void CGameClient::cb_close_game(void* kodiInstance)
 {
   using namespace MESSAGING;
@@ -822,7 +855,7 @@ void CGameClient::cb_enable_hardware_rendering(void* kodiInstance, const game_hw
   if (!gameClient)
     return;
 
-  //! @todo
+  gameClient->EnableHardwareRendering(hw_info);
 }
 
 uintptr_t CGameClient::cb_hw_get_current_framebuffer(void* kodiInstance)
@@ -831,8 +864,7 @@ uintptr_t CGameClient::cb_hw_get_current_framebuffer(void* kodiInstance)
   if (!gameClient)
     return 0;
 
-  //! @todo
-  return 0;
+  return gameClient->HwGetCurrentFramebuffer();
 }
 
 game_proc_address_t CGameClient::cb_hw_get_proc_address(void* kodiInstance, const char *sym)
@@ -841,8 +873,7 @@ game_proc_address_t CGameClient::cb_hw_get_proc_address(void* kodiInstance, cons
   if (!gameClient)
     return nullptr;
 
-  //! @todo
-  return nullptr;
+  return gameClient->HwGetProcAddress(sym);
 }
 
 void CGameClient::cb_render_frame(void* kodiInstance)
@@ -851,7 +882,7 @@ void CGameClient::cb_render_frame(void* kodiInstance)
   if (!gameClient)
     return;
 
-  //! @todo
+  gameClient->RenderFrame();
 }
 
 bool CGameClient::cb_input_event(void* kodiInstance, const game_input_event* event)
