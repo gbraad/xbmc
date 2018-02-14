@@ -34,6 +34,8 @@
 #include "system.h"
 #include "system_gl.h"
 
+#define GL_DEBUGGING
+
 void _VerifyGLState(const char* szfile, const char* szfunction, int lineno);
 #if defined(GL_DEBUGGING) && (defined(HAS_GL) || defined(HAS_GLES))
 #define VerifyGLState() _VerifyGLState(__FILE__, __FUNCTION__, __LINE__)

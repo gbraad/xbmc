@@ -477,8 +477,15 @@ void CRPRendererOpenGLES::Render(uint8_t alpha)
   tex[1][0] = tex[2][0] = u2;
   tex[2][1] = tex[3][1] = v2;
 
+  VerifyGLState();
+
   glUniform4f(uniColLoc,(colour[0] / 255.0f), (colour[1] / 255.0f), (colour[2] / 255.0f), (colour[3] / 255.0f));
+
+  VerifyGLState();
+
   glDrawElements(GL_TRIANGLE_STRIP, 4, GL_UNSIGNED_BYTE, idx);
+
+  VerifyGLState();
 
   glDisableVertexAttribArray(posLoc);
   glDisableVertexAttribArray(tex0Loc);
