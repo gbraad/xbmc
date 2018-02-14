@@ -26,6 +26,8 @@
 
 #include <cstring>
 
+#define BUFFER_OFFSET(i) ((char *)NULL + (i))
+
 using namespace KODI;
 using namespace RETRO;
 
@@ -423,11 +425,6 @@ void CRPRendererOpenGLES::Render(uint8_t alpha)
   rect.y1 /= m_sourceHeight;
   rect.y2 /= m_sourceHeight;
 
-  float u1 = rect.x1;
-  float u2 = rect.x2;
-  float v1 = rect.y1;
-  float v2 = rect.y2;
-
   const uint32_t color = (alpha << 24) | 0xFFFFFF;
 
   glBindTexture(m_textureTarget, renderBuffer->TextureID());
@@ -443,19 +440,18 @@ void CRPRendererOpenGLES::Render(uint8_t alpha)
   m_context.EnableGUIShader(GL_SHADER_METHOD::TEXTURE);
 
   GLubyte colour[4];
-  GLfloat ver[4][3];
-  GLfloat tex[4][2];
   GLubyte idx[4] = {0, 1, 3, 2}; // Determines order of triangle strip
+  GLuint vertexVBO;
+  GLuint indexVBO;
+  struct PackedVertex
+  {
+    float x, y, z;
+    float u1, v1;
+  } vertex[4];
 
-  GLint posLoc = m_context.GUIShaderGetPos();
-  GLint tex0Loc = m_context.GUIShaderGetCoord0();
+  GLint vertLoc = m_context.GUIShaderGetPos();
+  GLint loc = m_context.GUIShaderGetCoord0();
   GLint uniColLoc = m_context.GUIShaderGetUniCol();
-
-  glVertexAttribPointer(posLoc, 3, GL_FLOAT, 0, 0, ver);
-  glVertexAttribPointer(tex0Loc, 2, GL_FLOAT, 0, 0, tex);
-
-  glEnableVertexAttribArray(posLoc);
-  glEnableVertexAttribArray(tex0Loc);
 
   // Setup color values
   colour[0] = static_cast<GLubyte>(GET_R(color));
@@ -466,22 +462,41 @@ void CRPRendererOpenGLES::Render(uint8_t alpha)
   for (unsigned int i = 0; i < 4; i++)
   {
     // Setup vertex position values
-    ver[i][0] = m_rotatedDestCoords[i].x;
-    ver[i][1] = m_rotatedDestCoords[i].y;
-    ver[i][2] = 0.0f;
+    vertex[i].x = m_rotatedDestCoords[i].x;
+    vertex[i].y = m_rotatedDestCoords[i].y;
+    vertex[i].z = 0.0f;
   }
 
   // Setup texture coordinates
-  tex[0][0] = tex[3][0] = u1;
-  tex[0][1] = tex[1][1] = v1;
-  tex[1][0] = tex[2][0] = u2;
-  tex[2][1] = tex[3][1] = v2;
+  vertex[0].u1 = vertex[3].u1 = rect.x1;
+  vertex[0].v1 = vertex[1].v1 = rect.y1;
+  vertex[1].u1 = vertex[2].u1 = rect.x2;
+  vertex[2].v1 = vertex[3].v1 = rect.y2;
+
+  glGenBuffers(1, &vertexVBO);
+  glBindBuffer(GL_ARRAY_BUFFER, vertexVBO);
+  glBufferData(GL_ARRAY_BUFFER, sizeof(PackedVertex)*4, &vertex[0], GL_STATIC_DRAW);
+
+  glVertexAttribPointer(vertLoc, 3, GL_FLOAT, 0, sizeof(PackedVertex), BUFFER_OFFSET(offsetof(PackedVertex, x)));
+  glVertexAttribPointer(loc, 2, GL_FLOAT, 0, sizeof(PackedVertex), BUFFER_OFFSET(offsetof(PackedVertex, u1)));
+
+  glEnableVertexAttribArray(vertLoc);
+  glEnableVertexAttribArray(loc);
+
+  glGenBuffers(1, &indexVBO);
+  glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, indexVBO);
+  glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(GLubyte)*4, idx, GL_STATIC_DRAW);
 
   glUniform4f(uniColLoc,(colour[0] / 255.0f), (colour[1] / 255.0f), (colour[2] / 255.0f), (colour[3] / 255.0f));
-  glDrawElements(GL_TRIANGLE_STRIP, 4, GL_UNSIGNED_BYTE, idx);
+  glDrawElements(GL_TRIANGLE_STRIP, 4, GL_UNSIGNED_BYTE, 0);
 
-  glDisableVertexAttribArray(posLoc);
-  glDisableVertexAttribArray(tex0Loc);
+  glDisableVertexAttribArray(vertLoc);
+  glDisableVertexAttribArray(loc);
+
+  glBindBuffer(GL_ARRAY_BUFFER, 0);
+  glDeleteBuffers(1, &vertexVBO);
+  glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
+  glDeleteBuffers(1, &indexVBO);
 
   m_context.DisableGUIShader();
 }
