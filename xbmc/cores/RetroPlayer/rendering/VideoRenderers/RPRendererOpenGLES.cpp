@@ -19,6 +19,8 @@
  */
 
 #include "RPRendererOpenGLES.h"
+#include "cores/RetroPlayer/buffers/RenderBufferFBO.h"
+#include "cores/RetroPlayer/buffers/RenderBufferPoolFBO.h"
 #include "cores/RetroPlayer/rendering/RenderContext.h"
 #include "cores/RetroPlayer/rendering/RenderVideoSettings.h"
 #include "utils/GLUtils.h"
@@ -45,7 +47,7 @@ CRPBaseRenderer *CRendererFactoryOpenGLES::CreateRenderer(const CRenderSettings 
 
 RenderBufferPoolVector CRendererFactoryOpenGLES::CreateBufferPools(CRenderContext &context)
 {
-  return { std::make_shared<CRenderBufferPoolOpenGLES>(context) };
+  return { std::make_shared<CRenderBufferPoolFBO>(context) };
 }
 
 // --- CRenderBufferOpenGLES ---------------------------------------------------
@@ -413,7 +415,7 @@ void CRPRendererOpenGLES::DrawBlackBars()
 
 void CRPRendererOpenGLES::Render(uint8_t alpha)
 {
-  CRenderBufferOpenGLES *renderBuffer = static_cast<CRenderBufferOpenGLES*>(m_renderBuffer);
+  CRenderBufferFBO *renderBuffer = static_cast<CRenderBufferFBO*>(m_renderBuffer);
 
   if (renderBuffer == nullptr)
     return;
