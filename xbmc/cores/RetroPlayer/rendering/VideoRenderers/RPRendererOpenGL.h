@@ -66,7 +66,7 @@ namespace RETRO
   protected:
     // implementation of CBaseRenderBufferPool via CRenderBufferPoolOpenGLES
     IRenderBuffer *CreateRenderBuffer(void *header = nullptr) override;
-    bool ConfigureInternal();
+    bool ConfigureInternal() override;
   };
 
   class CRPRendererOpenGL : public CRPRendererOpenGLES
