@@ -158,6 +158,8 @@ public:
   CVideoSettings GetVideoSettings();
   void SetVideoSettings(CVideoSettings& settings);
 
+  std::string GetGameAddon() const;
+
   CSeekHandler& GetSeekHandler();
 
 private:

@@ -987,6 +987,16 @@ void CApplicationPlayer::SetVideoSettings(CVideoSettings& settings)
   }
 }
 
+std::string CApplicationPlayer::GetGameAddon() const
+{
+  std::shared_ptr<IPlayer> player = GetInternal();
+  if (player)
+  {
+    return player->GetGameAddon();
+  }
+  return "";
+}
+
 CSeekHandler& CApplicationPlayer::GetSeekHandler()
 {
   return m_seekHandler;
