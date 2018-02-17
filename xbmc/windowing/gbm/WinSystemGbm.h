@@ -58,6 +58,8 @@ public:
   virtual void Register(IDispResource *resource);
   virtual void Unregister(IDispResource *resource);
 
+  gbm_device *GetGBMDevice() { return m_GBM->m_device; }
+
   std::shared_ptr<CDRMUtils> m_DRM;
 
 protected:
