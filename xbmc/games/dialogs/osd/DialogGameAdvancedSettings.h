@@ -1,5 +1,5 @@
 /*
- *      Copyright (C) 2017 Team Kodi
+ *      Copyright (C) 2018 Team Kodi
  *      http://kodi.tv
  *
  *  This Program is free software; you can redistribute it and/or modify
@@ -19,26 +19,29 @@
  */
 #pragma once
 
-#include "cores/IPlayer.h"
+#include "guilib/GUIDialog.h"
 
 namespace KODI
 {
-namespace RETRO
+
+namespace GAME
 {
-  class IRenderCallback
+  class CDialogGameAdvancedSettings: public CGUIDialog
   {
   public:
-    virtual ~IRenderCallback() = default;
+    CDialogGameAdvancedSettings();
+    ~CDialogGameAdvancedSettings() override = default;
 
-    virtual bool SupportsRenderFeature(ERENDERFEATURE feature) const = 0;
-    virtual bool SupportsScalingMethod(ESCALINGMETHOD method) const = 0;
+  protected:
+    // implementation of CGUIWindow via CGUIDialog
+    void OnInitWindow() override;
+    void OnDeinitWindow(int nextWindowID) override;
 
-    /*!
-     * \brief Get the game client being rendered
-     *
-     * \return The game client's ID, or empty if no game is being rendered
-     */
-    virtual std::string GameClientID() const = 0;
+  private:
+    void RegisterDialog();
+    void UnregisterDialog();
+
+    std::shared_ptr<RETRO::CGUIGameVideoHandle> m_gameVideoHandle;
   };
 }
 }
