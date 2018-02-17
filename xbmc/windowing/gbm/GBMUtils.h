@@ -20,6 +20,8 @@
 
 #pragma once
 
+#include "utils/IBufferObject.h"
+
 #include <gbm.h>
 
 class CGBMUtils
@@ -40,4 +42,28 @@ public:
 protected:
   struct gbm_bo *m_bo = nullptr;
   struct gbm_bo *m_next_bo = nullptr;
+};
+
+class CGBMBufferObject : public IBufferObject
+{
+public:
+  CGBMBufferObject(int format);
+  virtual ~CGBMBufferObject() override;
+
+  bool CreateBufferObject(int width, int height) override;
+  void DestroyBufferObject() override;
+  uint8_t* GetMemory() override;
+  void ReleaseMemory() override;
+  int GetFd() override;
+  int GetStride() override;
+
+private:
+  gbm_device *m_device = nullptr;
+
+  int m_format = 0;
+  int m_fd = -1;
+  uint32_t m_stride = 0;
+  uint8_t *m_map = nullptr;
+  void *m_map_data = nullptr;
+  gbm_bo *m_bo = nullptr;
 };
