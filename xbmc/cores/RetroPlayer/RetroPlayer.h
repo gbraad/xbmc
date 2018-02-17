@@ -129,6 +129,7 @@ namespace RETRO
     //void RenderCaptureRelease(unsigned int captureId) override { }
     //void RenderCapture(unsigned int captureId, unsigned int width, unsigned int height, int flags) override { }
     //bool RenderCaptureGetPixels(unsigned int captureId, unsigned int millis, uint8_t *buffer, unsigned int size) override { return false; }
+    std::string GetGameAddon() const override;
 
   private:
     void SetSpeedInternal(double speed);

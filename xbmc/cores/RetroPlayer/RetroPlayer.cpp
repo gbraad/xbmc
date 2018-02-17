@@ -538,6 +538,13 @@ bool CRetroPlayer::IsRenderingVideo()
   return true;
 }
 
+std::string CRetroPlayer::GetGameAddon() const
+{
+  if (m_gameClient)
+    return m_gameClient->ID();
+  return "";
+}
+
 void CRetroPlayer::SetSpeedInternal(double speed)
 {
   OnSpeedChange(speed);

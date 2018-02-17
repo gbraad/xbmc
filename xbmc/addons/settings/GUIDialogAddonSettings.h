@@ -49,7 +49,6 @@ protected:
   void Save() override { }
   CSettingsManager* GetSettingsManager() const override;
 
-private:
   ADDON::AddonPtr m_addon;
   bool m_saveToDisk = false;
 };

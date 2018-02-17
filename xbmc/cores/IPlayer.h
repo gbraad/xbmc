@@ -234,6 +234,11 @@ public:
   virtual CVideoSettings GetVideoSettings() { return CVideoSettings(); };
   virtual void SetVideoSettings(CVideoSettings& settings) {};
 
+  /*!
+   \ brief Get the add-on used for playing games
+   */
+  virtual std::string GetGameAddon() const { return ""; }
+
   std::string m_name;
   std::string m_type;
 
