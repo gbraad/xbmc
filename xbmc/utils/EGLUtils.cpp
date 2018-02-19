@@ -79,7 +79,10 @@ bool CEGLImage::CreateImage(eglAttrs imageAttrs)
 
 void CEGLImage::UploadImage(GLenum textureTarget)
 {
+  GLint format;
   glEGLImageTargetTexture2DOES(textureTarget, m_image);
+  glGetIntegerv(GL_IMPLEMENTATION_COLOR_READ_FORMAT, &format);
+  CLog::Log(LOGERROR, "GL Format %d", format);
 }
 
 void CEGLImage::DestroyImage()
