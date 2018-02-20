@@ -418,9 +418,9 @@ void CRPRendererOpenGLES::DrawBlackBars()
 
 void CRPRendererOpenGLES::Render(uint8_t alpha)
 {
-  CRenderBufferOpenGLES *renderBuffer = static_cast<CRenderBufferOpenGLES*>(m_renderBuffer);
+  CRenderTextureOpenGL *renderTexture = static_cast<CRenderTextureOpenGL*>(m_renderBuffer->GetTexture());
 
-  if (renderBuffer == nullptr)
+  if (renderTexture == nullptr)
     return;
 
   CRect rect = m_sourceRect;
@@ -432,7 +432,7 @@ void CRPRendererOpenGLES::Render(uint8_t alpha)
 
   const uint32_t color = (alpha << 24) | 0xFFFFFF;
 
-  glBindTexture(m_textureTarget, renderBuffer->TextureID());
+  glBindTexture(m_textureTarget, renderTexture->TextureID());
 
   GLint filter = GL_NEAREST;
   if (GetRenderSettings().VideoSettings().GetScalingMethod() == VS_SCALINGMETHOD_LINEAR)

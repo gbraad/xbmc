@@ -33,6 +33,7 @@ namespace KODI
 namespace RETRO
 {
   class IRenderBufferPool;
+  class IRenderTexture;
 
   class IRenderBuffer
   {
@@ -51,9 +52,13 @@ namespace RETRO
     virtual size_t GetFrameSize() const = 0;
     virtual uint8_t *GetMemory() = 0;
     virtual void ReleaseMemory() { }
-    virtual bool UploadTexture() = 0;
-    virtual void BindToUnit(unsigned int unit) { }
     virtual void SetHeader(void *header) { }
+
+    // Texture functions
+    virtual bool UploadTexture() = 0;
+    virtual IRenderTexture *GetTexture() = 0;
+
+    //virtual void BindToUnit(unsigned int unit) { }
 
     // Buffer properties
     AVPixelFormat GetFormat() const { return m_format; }
