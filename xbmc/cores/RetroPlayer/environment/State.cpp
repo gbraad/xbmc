@@ -1,5 +1,5 @@
 /*
- *      Copyright (C) 2017 Team Kodi
+ *      Copyright (C) 2017-2018 Team Kodi
  *      http://kodi.tv
  *
  *  This Program is free software; you can redistribute it and/or modify
@@ -23,32 +23,7 @@
 using namespace KODI;
 using namespace RETRO;
 
-CState::CState(CEnvironment *environment) :
+CState::CState() :
   m_timestamp(0)
 {
-}
-
-void CState::Update(uint64_t timestamp, const CReward& reward, const CGoal& goal, const CAction& action)
-{
-  if (timestamp == 0)
-  {
-    //! @todo
-    //RunFrame();
-  }
-  else
-  {
-    /*! @todo
-    if (emulator)
-    {
-      if (emulator.state.timestamp != timestamp)
-        emulator.Deserialize();
-      RunFrame();
-    }
-    */
-  }
-}
-
-void CState::Initialize()
-{
-
 }
