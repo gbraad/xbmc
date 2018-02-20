@@ -7,7 +7,6 @@ set(SOURCES RenderContext.cpp
 )
 
 set(HEADERS IRenderManager.h
-            IRenderTexture.h
             RenderContext.h
             RenderGeometry.h
             RenderSettings.h

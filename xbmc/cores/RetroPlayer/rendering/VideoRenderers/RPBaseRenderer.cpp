@@ -55,7 +55,7 @@ CRPBaseRenderer::CRPBaseRenderer(const CRenderSettings &renderSettings, CRenderC
 
 CRPBaseRenderer::~CRPBaseRenderer()
 {
-  SetTexture(nullptr);
+  SetBuffer(nullptr);
 
   m_bufferPool->UnregisterRenderer(this);
 }
