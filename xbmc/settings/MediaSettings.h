@@ -56,8 +56,6 @@ public:
 
   const CGameSettings& GetDefaultGameSettings() const { return m_defaultGameSettings; }
   CGameSettings& GetDefaultGameSettings() { return m_defaultGameSettings; }
-  const CGameSettings& GetCurrentGameSettings() const { return m_currentGameSettings; }
-  CGameSettings& GetCurrentGameSettings() { return m_currentGameSettings; }
 
   /*! \brief Retrieve the watched mode for the given content type
    \param content Current content type
@@ -107,7 +105,6 @@ private:
   CVideoSettings m_defaultVideoSettings;
 
   CGameSettings m_defaultGameSettings;
-  CGameSettings m_currentGameSettings;
 
   typedef std::map<std::string, WatchedMode> WatchedModes;
   WatchedModes m_watchedModes;
