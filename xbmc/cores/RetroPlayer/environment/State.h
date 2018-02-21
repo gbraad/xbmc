@@ -25,61 +25,22 @@ namespace KODI
 {
 namespace RETRO
 {
-  enum class VideoFormat
-  {
-    FORMAT_0RGB8888,
-    FORMAT_RGB565,
-    FORMAT_0RGB1555,
-  };
-
-  struct VideoState
-  {
-    const VideoFormat format;
-    unsigned int width = 0;
-    unsigned int height = 0;
-    unsigned int stride = 0;
-    unsigned int orientationDeg = 0; // Counter clockwise
-  };
-
-  class CVideoState
-  {
-  public:
-    CVideoState();
-
-    VideoFormat Format() const { return m_format; }
-    unsigned int Width() const { return m_videoWidth; }
-    unsigned int Height() const { return m_videoHeight; }
-    unsigned int Stride() const { return m_videoStride; }
-    const uint8_t *Data() const { return m_pixels; }
-    unsigned int
-
-    void SetFormat(VideoFormat format) { m_format = format; }
-    void SetWidth(unsigned int width) { m_videoWidth = width; }
-    void SetHeight(unsigned int height) { m_videoHeight = height; }
-
-    void RegisterVideoReceiver();
-    void UnregisterVideoReceiver();
-
-  private:
-    const VideoFormat m_format;
-    unsigned int m_videoWidth = 0;
-    unsigned int m_videoHeight = 0;
-    unsigned int m_videoStride = 0;
-  };
+  class CAction;
+  class CEnvironment;
+  class CGoal;
+  class CReward;
 
   class CState
   {
   public:
-    CState();
+    CState(CEnvironment *environment);
+
+    void Update(uint64_t timestamp, const CReward& reward, const CGoal& goal, const CAction& action);
 
   private:
     void Initialize();
 
     uint64_t m_timestamp;
-    CVideoState m_video;
-    //CAudioState m_audio;
-    //CMemoryState m_memory;
-    //CFeedbackState m_feedback;
   };
 }
 }

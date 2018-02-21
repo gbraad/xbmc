@@ -23,7 +23,7 @@
 using namespace KODI;
 using namespace RETRO;
 
-CState::CState() :
+CState::CState(CEnvironment *environment) :
   m_timestamp(0)
 {
 }
