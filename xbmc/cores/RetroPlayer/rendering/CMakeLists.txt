@@ -1,5 +1,6 @@
 set(SOURCES RenderContext.cpp
             RenderGeometry.cpp
+            RenderResourceSysMem.cpp
             RenderSettings.cpp
             RenderTranslator.cpp
             RenderVideoSettings.cpp
@@ -7,8 +8,11 @@ set(SOURCES RenderContext.cpp
 )
 
 set(HEADERS IRenderManager.h
+            IRenderResource.h
+            IRenderResourceMemory.h
             RenderContext.h
             RenderGeometry.h
+            RenderResourceSysMem.h
             RenderSettings.h
             RenderTranslator.h
             RenderVideoSettings.h
