@@ -59,14 +59,14 @@ namespace RETRO
    */
   struct TaskData
   {
-    TaskData(std::shared_ptr<Task> task, RequirementCallback callback) :
+    TaskData(std::shared_ptr<Task> task, TaskCallback callback) :
       task(std::move(task)),
       callback(callback)
     {
     }
 
     const std::shared_ptr<Task> task;
-    const RequirementCallback callback;
+    const TaskCallback callback;
     RequirementsMap requirementsMap;
     Requirements requirements;
     Runnable runnable;
@@ -91,7 +91,7 @@ namespace RETRO
      * When it has run, the result or error will be sent to the callback
      * method.
      */
-    void AddTask(std::shared_ptr<Task> task, RequirementCallback callback)
+    void AddTask(std::shared_ptr<Task> task, TaskCallback callback)
     {
       CSingleLock lock(m_mutex);
 

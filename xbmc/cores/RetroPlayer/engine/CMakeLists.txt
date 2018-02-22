@@ -1,11 +1,13 @@
-set(SOURCES Demands.cpp
+set(SOURCES Core.cpp
+            Demands.cpp
             Predicates.cpp
             Supplies.cpp
             TaskQueues.cpp
             Tasks.cpp
             ThreadPools.cpp)
 
-set(HEADERS Demands.h
+set(HEADERS Core.h
+            Demands.h
             Predicates.h
             Supplies.h
             TaskQueues.h
