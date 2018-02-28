@@ -362,14 +362,14 @@ bool CGameClient::LoadGameInfo()
   catch (...) { LogException("GetRegion()"); return false; }
 
   CLog::Log(LOGINFO, "GAME: ---------------------------------------");
-  CLog::Log(LOGINFO, "GAME: Base Width:   %u", av_info.geometry.base_width);
-  CLog::Log(LOGINFO, "GAME: Base Height:  %u", av_info.geometry.base_height);
-  CLog::Log(LOGINFO, "GAME: Max Width:    %u", av_info.geometry.max_width);
-  CLog::Log(LOGINFO, "GAME: Max Height:   %u", av_info.geometry.max_height);
-  CLog::Log(LOGINFO, "GAME: Aspect Ratio: %f", av_info.geometry.aspect_ratio);
-  CLog::Log(LOGINFO, "GAME: FPS:          %f", av_info.timing.fps);
-  CLog::Log(LOGINFO, "GAME: Sample Rate:  %f", av_info.timing.sample_rate);
-  CLog::Log(LOGINFO, "GAME: Region:       %s", CGameClientTranslator::TranslateRegion(region));
+  CLog::Log(LOGINFO, "GAME: Nominal Width:  %u", av_info.geometry.nominal_width);
+  CLog::Log(LOGINFO, "GAME: Nominal Height: %u", av_info.geometry.nominal_height);
+  CLog::Log(LOGINFO, "GAME: Max Width:      %u", av_info.geometry.max_width);
+  CLog::Log(LOGINFO, "GAME: Max Height:     %u", av_info.geometry.max_height);
+  CLog::Log(LOGINFO, "GAME: Aspect Ratio:   %f", av_info.geometry.aspect_ratio);
+  CLog::Log(LOGINFO, "GAME: FPS:            %f", av_info.timing.fps);
+  CLog::Log(LOGINFO, "GAME: Sample Rate:    %f", av_info.timing.sample_rate);
+  CLog::Log(LOGINFO, "GAME: Region:         %s", CGameClientTranslator::TranslateRegion(region));
   CLog::Log(LOGINFO, "GAME: ---------------------------------------");
 
   m_framerate = av_info.timing.fps;
