@@ -40,11 +40,13 @@
 #include "interfaces/python/XBPython.h"
 #include "pvr/PVRManager.h"
 #include "network/Network.h"
+#include "rendering/RenderSystem.h"
 #include "settings/Settings.h"
 #include "utils/FileExtensionProvider.h"
 #include "windowing/WinSystem.h"
 #include "powermanagement/PowerManager.h"
 #include "weather/WeatherManager.h"
+#include "windowing/WinSystem.h"
 #include "DatabaseManager.h"
 
 using namespace KODI;
@@ -419,6 +421,12 @@ CFileExtensionProvider& CServiceManager::GetFileExtensionProvider()
 CWinSystemBase &CServiceManager::GetWinSystem()
 {
   return *m_winSystem.get();
+}
+
+CRenderSystemBase &CServiceManager::GetRenderSystem()
+{
+  CRenderSystemBase &renderSystem = dynamic_cast<CRenderSystemBase&>(*m_winSystem);
+  return renderSystem;
 }
 
 void CServiceManager::SetWinSystem(std::unique_ptr<CWinSystemBase> winSystem)

@@ -63,6 +63,7 @@ class IAE;
 class CFavouritesService;
 class CNetwork;
 class CWinSystemBase;
+class CRenderSystemBase;
 class CPowerManager;
 class CWeatherManager;
 
@@ -144,6 +145,8 @@ public:
 
   CWinSystemBase &GetWinSystem();
   void SetWinSystem(std::unique_ptr<CWinSystemBase> winSystem);
+
+  CRenderSystemBase &GetRenderSystem();
 
   CPowerManager &GetPowerManager();
 
