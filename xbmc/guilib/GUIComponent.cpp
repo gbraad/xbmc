@@ -20,6 +20,7 @@
 
 #include "GUIComponent.h"
 #include "GUIWindowManager.h"
+#include "StereoscopicsManager.h"
 #include "TextureManager.h"
 #include "dialogs/GUIDialogYesNo.h"
 #include "GUILargeTextureManager.h"
@@ -41,12 +42,19 @@ CGUIComponent::~CGUIComponent()
 void CGUIComponent::Init()
 {
   m_pWindowManager->Initialize();
+  m_stereoscopicsManager.reset(new CStereoscopicsManager(CServiceBroker::GetSettings(),
+                                                         CServiceBroker::GetDataCacheCore(),
+                                                         *m_pWindowManager));
+  m_stereoscopicsManager->Initialize();
+
   CServiceBroker::RegisterGUI(this);
 }
 
 void CGUIComponent::Deinit()
 {
   CServiceBroker::UnregisterGUI();
+
+  m_stereoscopicsManager.reset();
   m_pWindowManager->DeInitialize();
 }
 
@@ -63,6 +71,11 @@ CGUITextureManager& CGUIComponent::GetTextureManager()
 CGUILargeTextureManager& CGUIComponent::GetLargeTextureManager()
 {
   return *m_pLargeTextureManager;
+}
+
+CStereoscopicsManager &CGUIComponent::GetStereoscopicsManager()
+{
+  return *m_stereoscopicsManager;
 }
 
 bool CGUIComponent::ConfirmDelete(std::string path)
