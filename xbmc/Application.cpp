@@ -1149,8 +1149,6 @@ bool CApplication::Initialize()
       // the startup window is considered part of the initialization as it most likely switches to the final window
       uiInitializationFinished = firstWindow != WINDOW_STARTUP_ANIM;
 
-      CStereoscopicsManager::GetInstance().Initialize();
-
       if (!m_ServiceManager->InitStageThree())
       {
         CLog::Log(LOGERROR, "Application - Init3 failed");
@@ -1629,7 +1627,6 @@ bool CApplication::LoadSkin(const std::string& skinID)
   g_windowManager.AddMsgTarget(&CServiceBroker::GetPlaylistPlayer());
   g_windowManager.AddMsgTarget(&g_infoManager);
   g_windowManager.AddMsgTarget(&g_fontManager);
-  g_windowManager.AddMsgTarget(&CStereoscopicsManager::GetInstance());
   g_windowManager.SetCallback(*this);
   g_windowManager.Initialize();
   CTextureCache::GetInstance().Initialize();
@@ -2107,7 +2104,7 @@ bool CApplication::OnAction(const CAction &action)
   }
 
   // forward action to graphic context and see if it can handle it
-  if (CStereoscopicsManager::GetInstance().OnAction(action))
+  if (m_ServiceManager->GetStereoscopicsManager().OnAction(action))
     return true;
 
   if (m_appPlayer.IsPlaying())
@@ -3431,7 +3428,7 @@ void CApplication::OnPlayBackSeekChapter(int iChapter)
 
 void CApplication::OnAVChange()
 {
-  CStereoscopicsManager::GetInstance().OnStreamChange();
+  m_ServiceManager->GetStereoscopicsManager().OnStreamChange();
 }
 
 void CApplication::RequestVideoSettings(const CFileItem &fileItem)

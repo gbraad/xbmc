@@ -184,3 +184,8 @@ CEventLog& CServiceBroker::GetEventLog()
 {
   return g_application.m_ServiceManager->GetEventLog();
 }
+
+CStereoscopicsManager &CServiceBroker::GetStereoscopicsManager()
+{
+  return g_application.m_ServiceManager->GetStereoscopicsManager();
+}

@@ -30,6 +30,7 @@
 #include "favourites/FavouritesService.h"
 #include "games/controllers/ControllerManager.h"
 #include "games/GameServices.h"
+#include "guilib/StereoscopicsManager.h"
 #include "peripherals/Peripherals.h"
 #include "PlayListPlayer.h"
 #include "profiles/ProfilesManager.h"
@@ -231,6 +232,11 @@ bool CServiceManager::StartAudioEngine()
 // stage 3 is called after successful initialization of WindowManager
 bool CServiceManager::InitStageThree()
 {
+  m_stereoscopicsManager.reset(new CStereoscopicsManager(*m_settings,
+                                                         *m_dataCacheCore,
+                                                         GetRenderSystem()));
+  m_stereoscopicsManager->Initialize();
+
   // Peripherals depends on strings being loaded before stage 3
   m_peripherals->Initialise();
 
@@ -259,6 +265,7 @@ void CServiceManager::DeinitStageThree()
   m_contextMenuManager->Deinit();
   m_gameServices.reset();
   m_peripherals->Clear();
+  m_stereoscopicsManager.reset();
 }
 
 void CServiceManager::DeinitStageTwo()
@@ -503,4 +510,9 @@ CProfilesManager &CServiceManager::GetProfileManager()
 CEventLog &CServiceManager::GetEventLog()
 {
   return m_profileManager->GetEventLog();
+}
+
+CStereoscopicsManager &CServiceManager::GetStereoscopicsManager()
+{
+  return *m_stereoscopicsManager;
 }

@@ -92,6 +92,7 @@ class CPlayerCoreFactory;
 class CDatabaseManager;
 class CProfilesManager;
 class CEventLog;
+class CStereoscopicsManager;
 
 class CServiceManager
 {
@@ -160,6 +161,8 @@ public:
 
   CEventLog &GetEventLog();
 
+  CStereoscopicsManager &GetStereoscopicsManager();
+
 protected:
   struct delete_dataCacheCore
   {
@@ -215,4 +218,5 @@ protected:
   std::unique_ptr<CPlayerCoreFactory> m_playerCoreFactory;
   std::unique_ptr<CDatabaseManager> m_databaseManager;
   std::unique_ptr<CProfilesManager> m_profileManager;
+  std::unique_ptr<CStereoscopicsManager> m_stereoscopicsManager;
 };
