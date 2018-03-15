@@ -1066,6 +1066,9 @@ bool CApplication::Initialize()
 
   StartServices();
 
+  // GUI depends on seek handler
+  m_appPlayer.GetSeekHandler().Configure();
+
   // Init DPMS, before creating the corresponding setting control.
   m_dpms.reset(new DPMSSupport());
   bool uiInitializationFinished = true;
@@ -1174,9 +1177,6 @@ bool CApplication::Initialize()
   }
 
   m_slowTimer.StartZero();
-
-  // configure seek handler
-  m_appPlayer.GetSeekHandler().Configure();
 
   // register action listeners
   RegisterActionListener(&m_appPlayer.GetSeekHandler());
