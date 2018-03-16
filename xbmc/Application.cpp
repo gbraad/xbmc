@@ -211,7 +211,6 @@
 #include "cores/FFmpeg.h"
 #include "utils/CharsetConverter.h"
 #include "pictures/GUIWindowSlideShow.h"
-#include "windows/GUIWindowLoginScreen.h"
 
 using namespace ADDON;
 using namespace XFILE;
@@ -1071,7 +1070,7 @@ bool CApplication::Initialize()
 
   // Init DPMS, before creating the corresponding setting control.
   m_dpms.reset(new DPMSSupport());
-  bool uiInitializationFinished = true;
+  bool uiInitializationFinished = false;
   if (g_windowManager.Initialized())
   {
     m_ServiceManager->GetSettings().GetSetting(CSettings::SETTING_POWERMANAGEMENT_DISPLAYSOFF)->SetRequirementsMet(m_dpms->IsSupported());
@@ -1122,24 +1121,18 @@ bool CApplication::Initialize()
 
     if (m_ServiceManager->GetSettings().GetBool(CSettings::SETTING_MASTERLOCK_STARTUPLOCK) &&
         m_ServiceManager->GetProfileManager().GetMasterProfile().getLockMode() != LOCK_MODE_EVERYONE &&
-       !m_ServiceManager->GetProfileManager().GetMasterProfile().getLockCode().empty())
+        !m_ServiceManager->GetProfileManager().GetMasterProfile().getLockCode().empty())
     {
-       g_passwordManager.CheckStartUpLock();
+      g_passwordManager.CheckStartUpLock();
     }
 
     // check if we should use the login screen
     if (m_ServiceManager->GetProfileManager().UsingLoginScreen())
     {
-      // the login screen still needs to perform additional initialization
-      uiInitializationFinished = false;
-
       g_windowManager.ActivateWindow(WINDOW_LOGIN_SCREEN);
     }
     else
     {
-      CJSONRPC::Initialize();
-      CServiceBroker::GetServiceAddons().StartBeforeLogin();
-
       // activate the configured start window
       int firstWindow = g_SkinInfo->GetFirstWindow();
       g_windowManager.ActivateWindow(firstWindow);
@@ -1151,18 +1144,19 @@ bool CApplication::Initialize()
 
       // the startup window is considered part of the initialization as it most likely switches to the final window
       uiInitializationFinished = firstWindow != WINDOW_STARTUP_ANIM;
-
-      if (!m_ServiceManager->InitStageThree())
-      {
-        CLog::Log(LOGERROR, "Application - Init3 failed");
-      }
     }
-
   }
   else //No GUI Created
   {
-    CJSONRPC::Initialize();
-    CServiceBroker::GetServiceAddons().StartBeforeLogin();
+    uiInitializationFinished = true;
+  }
+
+  CJSONRPC::Initialize();
+  CServiceBroker::GetServiceAddons().StartBeforeLogin();
+
+  if (!m_ServiceManager->InitStageThree())
+  {
+    CLog::Log(LOGERROR, "Application - Init3 failed");
   }
 
   g_sysinfo.Refresh();
@@ -2546,7 +2540,12 @@ void CApplication::OnApplicationMessage(ThreadMessage* pMsg)
   break;
 
   case TMSG_LOADPROFILE:
-    CGUIWindowLoginScreen::LoadProfile(pMsg->param1);
+    {
+      const int profile = pMsg->param1;
+      if (profile >= 0)
+        m_ServiceManager->GetProfileManager().LoadProfile(static_cast<unsigned int>(profile));
+    }
+
     break;
 
   default:
