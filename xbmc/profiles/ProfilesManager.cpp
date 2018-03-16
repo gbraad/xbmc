@@ -30,6 +30,7 @@
 #include "ServiceBroker.h"
 #include "Util.h"
 #include "addons/Skin.h"
+#include "dialogs/GUIDialogKaiToast.h"
 #include "dialogs/GUIDialogYesNo.h"
 #include "events/EventLog.h"
 #include "events/EventLogManager.h"
@@ -59,7 +60,9 @@
 #include "guilib/StereoscopicsManager.h" //! @todo Remove me
 #include "interfaces/json-rpc/JSONRPC.h" //! @todo Remove me
 #include "network/Network.h" //! @todo Remove me
+#include "network/NetworkServices.h" //! @todo Remove me
 #include "pvr/PVRManager.h" //! @todo Remove me
+#include "video/VideoLibraryQueue.h"//! @todo Remove me
 #include "weather/WeatherManager.h" //! @todo Remove me
 #include "Application.h" //! @todo Remove me
 #include "ContextMenuManager.h" //! @todo Remove me
@@ -389,6 +392,31 @@ void CProfilesManager::FinalizeLoadProfile()
   g_application.UpdateLibraries();
 
   stereoscopicsManager.Initialize();
+}
+
+void CProfilesManager::LogOff()
+{
+  CNetwork &networkManager = CServiceBroker::GetNetwork();
+
+  g_application.StopPlaying();
+
+  if (g_application.IsMusicScanning())
+    g_application.StopMusicScan();
+
+  if (CVideoLibraryQueue::GetInstance().IsRunning())
+    CVideoLibraryQueue::GetInstance().CancelAllJobs();
+
+  networkManager.NetworkMessage(CNetwork::SERVICES_DOWN, 1);
+
+  LoadMasterProfileForLogin();
+
+  g_passwordManager.bMasterUser = false;
+
+  g_application.WakeUpScreenSaverAndDPMS();
+  g_windowManager.ActivateWindow(WINDOW_LOGIN_SCREEN, {}, false);
+
+  if (!CNetworkServices::GetInstance().StartEventServer()) // event server could be needed in some situations
+    CGUIDialogKaiToast::QueueNotification(CGUIDialogKaiToast::Warning, g_localizeStrings.Get(33102), g_localizeStrings.Get(33100));
 }
 
 bool CProfilesManager::DeleteProfile(size_t index)
