@@ -125,20 +125,19 @@ bool CRetroPlayer::OpenFile(const CFileItem& file, const CPlayerOptions& options
     m_gameClient = std::static_pointer_cast<CGameClient>(addon);
     if (m_gameClient->Initialize())
     {
-      m_audio.reset(new CRetroPlayerAudio(*m_processInfo));
-      m_video.reset(new CRetroPlayerVideo(*m_renderManager, *m_processInfo));
+      m_streamManager.reset(new CRPStreamManager(*m_renderManager, *m_processInfo))
       m_input.reset(new CRetroPlayerInput(CServiceBroker::GetPeripherals()));
 
       if (!bStandalone)
       {
         std::string redactedPath = CURL::GetRedacted(fileCopy.GetPath());
         CLog::Log(LOGINFO, "RetroPlayer[PLAYER]: Opening: %s", redactedPath.c_str());
-        bSuccess = m_gameClient->OpenFile(fileCopy, m_audio.get(), m_video.get(), m_input.get());
+        bSuccess = m_gameClient->OpenFile(fileCopy, *m_streamManager, m_input.get());
       }
       else
       {
         CLog::Log(LOGINFO, "RetroPlayer[PLAYER]: Opening standalone");
-        bSuccess = m_gameClient->OpenStandalone(m_audio.get(), m_video.get(), m_input.get());
+        bSuccess = m_gameClient->OpenStandalone(*m_streamManager, m_input.get());
       }
 
       if (bSuccess)
@@ -196,8 +195,7 @@ bool CRetroPlayer::OpenFile(const CFileItem& file, const CPlayerOptions& options
   {
     m_gameClient.reset();
     m_input.reset();
-    m_audio.reset();
-    m_video.reset();
+    m_streamManager.reset();
   }
 
   return bSuccess;
@@ -227,8 +225,7 @@ bool CRetroPlayer::CloseFile(bool reopen /* = false */)
   }
 
   m_input.reset();
-  m_audio.reset();
-  m_video.reset();
+  m_streamManager.reset();
 
   m_renderManager.reset();
   m_processInfo.reset();

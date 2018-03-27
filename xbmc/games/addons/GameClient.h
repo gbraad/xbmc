@@ -41,10 +41,9 @@ namespace GAME
 class CGameClientInGameSaves;
 class CGameClientInput;
 class CGameClientProperties;
-class IGameAudioCallback;
 class IGameClientPlayback;
 class IGameInputCallback;
-class IGameVideoCallback;
+class IGameStreamCallback;
 
 /*!
  * \ingroup games
@@ -84,8 +83,8 @@ public:
   // Start/stop gameplay
   bool Initialize(void);
   void Unload();
-  bool OpenFile(const CFileItem& file, IGameAudioCallback* audio, IGameVideoCallback* video, IGameInputCallback *input);
-  bool OpenStandalone(IGameAudioCallback* audio, IGameVideoCallback* video, IGameInputCallback *input);
+  bool OpenFile(const CFileItem& file, IGameStreamCallback *streamCallback, IGameInputCallback *input);
+  bool OpenStandalone(IGameStreamCallback *streamCallback, IGameInputCallback *input);
   void Reset();
   void CloseFile();
   const std::string& GetGamePath() const { return m_gamePath; }
