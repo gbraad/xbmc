@@ -41,6 +41,7 @@ namespace RETRO
   public:
     ~CRendererFactoryMMAL() override = default;
 
+    virtual std::string RenderSystemName() const;
     CRPBaseRenderer *CreateRenderer(const CRenderSettings &settings, CRenderContext &context, std::shared_ptr<IRenderBufferPool> bufferPool) override;
     RenderBufferPoolVector CreateBufferPools(CRenderContext &context) override;
   };
